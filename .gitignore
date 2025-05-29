@@ -61,3 +61,28 @@ Thumbs.db
 **/test-secret.key
 **/secure-keys/
 
+
+# Security - Crypto material and private keys
+*.pem
+*.key
+**/keystore/
+**/crypto-config/
+**/organizations/
+**/*private*
+**/*priv_sk*
+**/tls/
+**/*cert*
+**/*-cert.pem
+**/tlsca/
+**/cacerts/
+**/signcerts/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Test secrets
+**/test-secret.key
+**/secure-keys/
+
