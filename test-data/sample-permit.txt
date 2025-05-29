@@ -1,0 +1,19 @@
+
+FIRE ALARM SYSTEM PERMIT APPLICATION
+
+Project: Test Commercial Building
+Address: 456 Business Plaza, Test City
+
+NFPA 72 COMPLIANCE STATEMENT
+This fire alarm system installation complies with NFPA 72 requirements.
+All devices are UL listed and approved for this application.
+
+System Components:
+- Fire Alarm Control Panel (UL Listed)
+- Smoke Detectors per NFPA 72
+- Manual Pull Stations
+- Notification Appliances
+- Emergency Communication System
+
+Installation per NFPA 72 and local codes.
+        

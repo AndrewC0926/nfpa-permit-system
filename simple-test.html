@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+    <style>
+        body { 
+            background: white; 
+            font-family: Arial; 
+            padding: 20px; 
+        }
+        .test { 
+            background: lightblue; 
+            padding: 20px; 
+            margin: 20px 0; 
+        }
+    </style>
+</head>
+<body>
+    <h1>NFPA Test Page</h1>
+    <div class="test">
+        <h2>If you can see this, HTML/CSS works!</h2>
+    </div>
+    <div id="js-test">JavaScript loading...</div>
+    
+    <script>
+        document.getElementById('js-test').innerHTML = 
+            '<h2 style="color: green;">✅ JavaScript works!</h2>';
+        console.log('JavaScript is working');
+    </script>
+</body>
+</html>

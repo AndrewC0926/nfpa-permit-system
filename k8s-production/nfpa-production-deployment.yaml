@@ -1,0 +1,145 @@
+# NFPA Permit System - Production Kubernetes Configuration
+# Deploy with: kubectl apply -f k8s-production/
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nfpa-permit-system
+  labels:
+    app: nfpa-permit-system
+    environment: production
+
+---
+# ConfigMap for application configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nfpa-config
+  namespace: nfpa-permit-system
+data:
+  NODE_ENV: "production"
+  PORT: "3001"
+  LOG_LEVEL: "info"
+  FABRIC_NETWORK_PATH: "/app/fabric-config"
+  CHANNEL_NAME: "mychannel"
+  CHAINCODE_NAME: "nfpaPermit"
+
+---
+# Secret for sensitive configuration
+apiVersion: v1
+kind: Secret
+metadata:
+  name: nfpa-secrets
+  namespace: nfpa-permit-system
+type: Opaque
+stringData:
+  JWT_SECRET: "your-super-secure-jwt-secret-here"
+  SESSION_SECRET: "your-super-secure-session-secret-here"
+  DATABASE_URL: "postgresql://user:password@postgres:5432/nfpa_permits"
+  STRIPE_SECRET_KEY: "sk_live_your_stripe_secret_key"
+  EMAIL_PASSWORD: "your-email-password"
+
+---
+# NFPA Backend Application Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfpa-backend
+  namespace: nfpa-permit-system
+  labels:
+    app: nfpa-backend
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: nfpa-backend
+  template:
+    metadata:
+      labels:
+        app: nfpa-backend
+    spec:
+      containers:
+      - name: nfpa-backend
+        image: nfpa-permit-system:latest
+        ports:
+        - containerPort: 3001
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: nfpa-config
+              key: NODE_ENV
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: nfpa-config
+              key: PORT
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: nfpa-secrets
+              key: JWT_SECRET
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+
+---
+# Backend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: nfpa-backend-service
+  namespace: nfpa-permit-system
+spec:
+  selector:
+    app: nfpa-backend
+  ports:
+  - port: 3001
+    targetPort: 3001
+  type: ClusterIP
+
+---
+# Horizontal Pod Autoscaler for backend
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nfpa-backend-hpa
+  namespace: nfpa-permit-system
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nfpa-backend
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+

@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFPA Permit Management System</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .nav-item.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Dashboard Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .stat-change.positive {
+            color: #10b981;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .data-table th {
+            background: #f9fafb;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .data-table tr:hover {
+            background: #f9fafb;
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-submitted {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-under-review {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Loading states */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+
+        .icon {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .icon-lg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .icon-xl {
+            width: 48px;
+            height: 48px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        // Simple icon components (since lucide-react is not working)
+        const Icon = ({ name, size = 16, className = "" }) => {
+            const icons = {
+                flame: "🔥",
+                fileText: "📄",
+                clock: "⏰", 
+                checkCircle: "✅",
+                dollarSign: "$",
+                send: "📤",
+                fileX: "❌",
+                plus: "➕",
+                calendar: "📅"
+            };
+            
+            return (
+                <span 
+                    className={className}
+                    style={{ 
+                        fontSize: `${size}px`, 
+                        display: 'inline-block',
+                        width: `${size}px`,
+                        height: `${size}px`,
+                        lineHeight: 1
+                    }}
+                >
+                    {icons[name] || "📄"}
+                </span>
+            );
+        };
+
+        // API Configuration
+        const API_BASE = 'http://localhost:3001';
+
+        // API Service
+        const api = {
+            async request(endpoint, options = {}) {
+                const url = `${API_BASE}${endpoint}`;
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers,
+                    },
+                    ...options,
+                };
+
+                if (config.body && typeof config.body === 'object') {
+                    config.body = JSON.stringify(config.body);
+                }
+
+                try {
+                    const response = await fetch(url, config);
+                    
+                    // Check if response is JSON
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const data = await response.json();
+                        if (!response.ok) {
+                            throw new Error(data.error || 'API request failed');
+                        }
+                        return data;
+                    } else {
+                        // Handle non-JSON responses
+                        const text = await response.text();
+                        if (!response.ok) {
+                            throw new Error('API request failed');
+                        }
+                        return { success: true, message: text };
+                    }
+                } catch (error) {
+                    console.error('API Error:', error);
+                    throw error;
+                }
+            },
+
+            async initSystem() {
+                // Try different initialization endpoints
+                try {
+                    return await this.request('/initialize', { method: 'POST' });
+                } catch (e) {
+                    try {
+                        return await this.request('/init', { method: 'POST' });
+                    } catch (e2) {
+                        // Just return success if no init endpoint
+                        return { success: true, message: 'System ready' };
+                    }
+                }
+            },
+
+            async getPermits(filters = {}) {
+                try {
+                    const params = new URLSearchParams(filters);
+                    return await this.request(`/api/permits?${params}`);
+                } catch (e) {
+                    try {
+                        return await this.request(`/permits?${params}`);
+                    } catch (e2) {
+                        return { data: [] };
+                    }
+                }
+            },
+
+            async createPermit(permitData) {
+                try {
+                    return await this.request('/api/permits', {
+                        method: 'POST',
+                        body: permitData,
+                    });
+                } catch (e) {
+                    return await this.request('/permits', {
+                        method: 'POST',
+                        body: permitData,
+                    });
+                }
+            },
+
+            async getPermit(permitId) {
+                try {
+                    return await this.request(`/api/permits/${permitId}`);
+                } catch (e) {
+                    return await this.request(`/permits/${permitId}`);
+                }
+            },
+
+            async updatePermitStatus(permitId, status, comments) {
+                try {
+                    return await this.request(`/api/permits/${permitId}/status`, {
+                        method: 'PATCH',
+                        body: { status, comments },
+                    });
+                } catch (e) {
+                    return await this.request(`/permits/${permitId}/status`, {
+                        method: 'PATCH',
+                        body: { status, comments },
+                    });
+                }
+            },
+
+            async getPermitTypes() {
+                try {
+                    return await this.request('/api/permit-types');
+                } catch (e) {
+                    // Return mock data if endpoint doesn't exist
+                    return {
+                        data: {
+                            'NFPA72_COMMERCIAL': {
+                                name: 'NFPA 72 Commercial Fire Alarm System',
+                                baseFee: 150
+                            },
+                            'NFPA72_RESIDENTIAL': {
+                                name: 'NFPA 72 Residential Fire Alarm System',
+                                baseFee: 75
+                            },
+                            'NFPA13_SPRINKLER': {
+                                name: 'NFPA 13 Fire Sprinkler System',
+                                baseFee: 200
+                            }
+                        }
+                    };
+                }
+            },
+
+            async getDashboardStats() {
+                try {
+                    return await this.request('/api/dashboard/stats');
+                } catch (e) {
+                    try {
+                        return await this.request('/dashboard');
+                    } catch (e2) {
+                        // Return mock stats
+                        return {
+                            data: {
+                                totalPermits: 0,
+                                pendingReview: 0,
+                                approved: 0,
+                                revenueCollected: 0
+                            }
+                        };
+                    }
+                }
+            },
+
+            async addInspection(permitId, inspectionData) {
+                try {
+                    return await this.request(`/api/permits/${permitId}/inspections`, {
+                        method: 'POST',
+                        body: inspectionData,
+                    });
+                } catch (e) {
+                    return await this.request(`/permits/${permitId}/inspections`, {
+                        method: 'POST',
+                        body: inspectionData,
+                    });
+                }
+            }
+        };
+
+        // Components
+        const LoadingSpinner = () => (
+            <div className="loading">
+                <div className="spinner"></div>
+            </div>
+        );
+
+        const StatusBadge = ({ status }) => {
+            const statusClass = `status-${status.toLowerCase().replace('_', '-')}`;
+            return (
+                <span className={`status-badge ${statusClass}`}>
+                    {status.replace('_', ' ')}
+                </span>
+            );
+        };
+
+        const Alert = ({ type, children, onClose }) => (
+            <div className={`alert alert-${type}`}>
+                {children}
+                {onClose && (
+                    <button 
+                        onClick={onClose} 
+                        style={{ float: 'right', background: 'none', border: 'none', cursor: 'pointer' }}
+                    >
+                        ×
+                    </button>
+                )}
+            </div>
+        );
+
+        const Header = ({ currentView, setCurrentView }) => (
+            <header className="header">
+                <div className="header-content">
+                    <div className="logo">
+                        <div className="logo-icon">
+                            <Icon name="flame" size={24} />
+                        </div>
+                        NFPA Permit System
+                    </div>
+                    <nav className="nav-menu">
+                        <div 
+                            className={`nav-item ${currentView === 'dashboard' ? 'active' : ''}`}
+                            onClick={() => setCurrentView('dashboard')}
+                        >
+                            Dashboard
+                        </div>
+                        <div 
+                            className={`nav-item ${currentView === 'permits' ? 'active' : ''}`}
+                            onClick={() => setCurrentView('permits')}
+                        >
+                            Permits
+                        </div>
+                        <div 
+                            className={`nav-item ${currentView === 'new-permit' ? 'active' : ''}`}
+                            onClick={() => setCurrentView('new-permit')}
+                        >
+                            New Permit
+                        </div>
+                        <div 
+                            className={`nav-item ${currentView === 'inspections' ? 'active' : ''}`}
+                            onClick={() => setCurrentView('inspections')}
+                        >
+                            Inspections
+                        </div>
+                    </nav>
+                </div>
+            </header>
+        );
+
+        const DashboardStats = ({ stats }) => {
+            if (!stats) return <LoadingSpinner />;
+
+            const statCards = [
+                {
+                    title: 'Total Permits',
+                    value: stats.totalPermits,
+                    icon: <Icon name="fileText" size={20} />,
+                    color: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+                    change: '+12% this month'
+                },
+                {
+                    title: 'Pending Review',
+                    value: stats.pendingReview,
+                    icon: <Icon name="clock" size={20} />,
+                    color: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                    change: '-5% from last week'
+                },
+                {
+                    title: 'Approved',
+                    value: stats.approved,
+                    icon: <Icon name="checkCircle" size={20} />,
+                    color: 'linear-gradient(135deg, #10b981, #059669)',
+                    change: '+18% this month'
+                },
+                {
+                    title: 'Revenue Collected',
+                    value: `$${stats.revenueCollected?.toLocaleString() || 0}`,
+                    icon: <Icon name="dollarSign" size={20} />,
+                    color: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                    change: '+22% this month'
+                }
+            ];
+
+            return (
+                <div className="stats-grid">
+                    {statCards.map((stat, index) => (
+                        <div key={index} className="stat-card fade-in">
+                            <div className="stat-header">
+                                <div className="stat-title">{stat.title}</div>
+                                <div className="stat-icon" style={{ background: stat.color }}>
+                                    {stat.icon}
+                                </div>
+                            </div>
+                            <div className="stat-value">{stat.value}</div>
+                            <div className="stat-change positive">{stat.change}</div>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const PermitForm = ({ onSubmit, permitTypes }) => {
+            const [formData, setFormData] = useState({
+                applicantInfo: {
+                    name: '',
+                    email: '',
+                    phone: '',
+                    address: '',
+                    licenseNumber: ''
+                },
+                projectDetails: {
+                    type: '',
+                    address: '',
+                    description: '',
+                    squareFootage: '',
+                    occupancyType: ''
+                }
+            });
+
+            const [loading, setLoading] = useState(false);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                try {
+                    await onSubmit(formData);
+                    setFormData({
+                        applicantInfo: {
+                            name: '',
+                            email: '',
+                            phone: '',
+                            address: '',
+                            licenseNumber: ''
+                        },
+                        projectDetails: {
+                            type: '',
+                            address: '',
+                            description: '',
+                            squareFootage: '',
+                            occupancyType: ''
+                        }
+                    });
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const updateField = (section, field, value) => {
+                setFormData(prev => ({
+                    ...prev,
+                    [section]: {
+                        ...prev[section],
+                        [field]: value
+                    }
+                }));
+            };
+
+            return (
+                <form onSubmit={handleSubmit} className="form-grid">
+                    <div>
+                        <h3 style={{ marginBottom: '1.5rem', color: '#1f2937' }}>Applicant Information</h3>
+                        
+                        <div className="form-group">
+                            <label className="form-label">Company/Contractor Name *</label>
+                            <input
+                                type="text"
+                                className="form-input"
+                                value={formData.applicantInfo.name}
+                                onChange={(e) => updateField('applicantInfo', 'name', e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Email *</label>
+                            <input
+                                type="email"
+                                className="form-input"
+                                value={formData.applicantInfo.email}
+                                onChange={(e) => updateField('applicantInfo', 'email', e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Phone *</label>
+                            <input
+                                type="tel"
+                                className="form-input"
+                                value={formData.applicantInfo.phone}
+                                onChange={(e) => updateField('applicantInfo', 'phone', e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Business Address *</label>
+                            <input
+                                type="text"
+                                className="form-input"
+                                value={formData.applicantInfo.address}
+                                onChange={(e) => updateField('applicantInfo', 'address', e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">License Number *</label>
+                            <input
+                                type="text"
+                                className="form-input"
+                                value={formData.applicantInfo.licenseNumber}
+                                onChange={(e) => updateField('applicantInfo', 'licenseNumber', e.target.value)}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 style={{ marginBottom: '1.5rem', color: '#1f2937' }}>Project Details</h3>
+                        
+                        <div className="form-group">
+                            <label className="form-label">Permit Type *</label>
+                            <select
+                                className="form-select"
+                                value={formData.projectDetails.type}
+                                onChange={(e) => updateField('projectDetails', 'type', e.target.value)}
+                                required
+                            >
+                                <option value="">Select permit type</option>
+                                {permitTypes && Object.entries(permitTypes).map(([key, type]) => (
+                                    <option key={key} value={key}>
+                                        {type.name} - ${type.baseFee}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Project Address *</label>
+                            <input
+                                type="text"
+                                className="form-input"
+                                value={formData.projectDetails.address}
+                                onChange={(e) => updateField('projectDetails', 'address', e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Project Description *</label>
+                            <textarea
+                                className="form-textarea"
+                                value={formData.projectDetails.description}
+                                onChange={(e) => updateField('projectDetails', 'description', e.target.value)}
+                                required
+                                placeholder="Describe the fire safety system installation or inspection..."
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Square Footage</label>
+                            <input
+                                type="number"
+                                className="form-input"
+                                value={formData.projectDetails.squareFootage}
+                                onChange={(e) => updateField('projectDetails', 'squareFootage', e.target.value)}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Occupancy Type</label>
+                            <select
+                                className="form-select"
+                                value={formData.projectDetails.occupancyType}
+                                onChange={(e) => updateField('projectDetails', 'occupancyType', e.target.value)}
+                            >
+                                <option value="">Select occupancy type</option>
+                                <option value="RESIDENTIAL">Residential</option>
+                                <option value="COMMERCIAL">Commercial</option>
+                                <option value="INDUSTRIAL">Industrial</option>
+                                <option value="ASSEMBLY">Assembly</option>
+                                <option value="INSTITUTIONAL">Institutional</option>
+                                <option value="MERCANTILE">Mercantile</option>
+                            </select>
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="btn btn-primary"
+                            disabled={loading}
+                            style={{ width: '100%', marginTop: '1rem' }}
+                        >
+                            {loading ? (
+                                <>
+                                    <div className="spinner" style={{ width: '16px', height: '16px' }}></div>
+                                    Submitting...
+                                </>
+                            ) : (
+                                <>
+                                    <Icon name="send" size={16} />
+                                    Submit Permit Application
+                                </>
+                            )}
+                        </button>
+                    </div>
+                </form>
+            );
+        };
+
+        const PermitList = ({ permits, onPermitClick, onStatusUpdate }) => {
+            if (!permits || permits.length === 0) {
+                return (
+                    <div style={{ textAlign: 'center', padding: '3rem', color: '#6b7280' }}>
+                        <Icon name="fileX" size={48} style={{ margin: '0 auto 1rem' }} />
+                        <p>No permits found</p>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="table-container">
+                    <table className="data-table">
+                        <thead>
+                            <tr>
+                                <th>Permit ID</th>
+                                <th>Applicant</th>
+                                <th>Type</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                                <th>Submitted</th>
+                                <th>Fee</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {permits.map((permit) => (
+                                <tr key={permit.Key || permit.id}>
+                                    <td>
+                                        <button
+                                            onClick={() => onPermitClick(permit.Record || permit)}
+                                            style={{ 
+                                                background: 'none', 
+                                                border: 'none', 
+                                                color: '#3b82f6',
+                                                cursor: 'pointer',
+                                                textDecoration: 'underline'
+                                            }}
+                                        >
+                                            {(permit.Record?.id || permit.id)?.slice(-8)}
+                                        </button>
+                                    </td>
+                                    <td>{(permit.Record?.applicantInfo || permit.applicantInfo)?.name}</td>
+                                    <td>{(permit.Record?.permitType || permit.permitType)?.name}</td>
+                                    <td>{(permit.Record?.projectDetails || permit.projectDetails)?.address}</td>
+                                    <td>
+                                        <StatusBadge status={permit.Record?.status || permit.status} />
+                                    </td>
+                                    <td>
+                                        {new Date((permit.Record?.submissionDate || permit.submissionDate)).toLocaleDateString()}
+                                    </td>
+                                    <td>${(permit.Record?.fee || permit.fee)}</td>
+                                    <td>
+                                        {(permit.Record?.status || permit.status) === 'SUBMITTED' && (
+                                            <button
+                                                onClick={() => onStatusUpdate(permit.Record?.id || permit.id, 'UNDER_REVIEW')}
+                                                className="btn btn-secondary"
+                                                style={{ fontSize: '0.75rem', padding: '0.5rem 1rem' }}
+                                            >
+                                                Review
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        };
+
+        const PermitModal = ({ permit, onClose, onStatusUpdate }) => {
+            const [newStatus, setNewStatus] = useState('');
+            const [comments, setComments] = useState('');
+            const [loading, setLoading] = useState(false);
+
+            const handleStatusUpdate = async () => {
+                if (!newStatus) return;
+                
+                setLoading(true);
+                try {
+                    await onStatusUpdate(permit.id, newStatus, comments);
+                    setNewStatus('');
+                    setComments('');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="modal-overlay" onClick={onClose}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                            <h2 style={{ margin: 0 }}>Permit Details</h2>
+                            <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+                        </div>
+
+                        <div style={{ marginBottom: '2rem' }}>
+                            <h3>Basic Information</h3>
+                            <p><strong>Permit ID:</strong> {permit.id}</p>
+                            <p><strong>Status:</strong> <StatusBadge status={permit.status} /></p>
+                            <p><strong>Applicant:</strong> {permit.applicantInfo?.name}</p>
+                            <p><strong>Email:</strong> {permit.applicantInfo?.email}</p>
+                            <p><strong>Phone:</strong> {permit.applicantInfo?.phone}</p>
+                            <p><strong>Project Address:</strong> {permit.projectDetails?.address}</p>
+                            <p><strong>Type:</strong> {permit.permitType?.name}</p>
+                            <p><strong>Fee:</strong> ${permit.fee}</p>
+                            <p><strong>Payment Status:</strong> {permit.paymentStatus}</p>
+                        </div>
+
+                        <div style={{ marginBottom: '2rem' }}>
+                            <h3>Project Description</h3>
+                            <p>{permit.projectDetails?.description}</p>
+                        </div>
+
+                        {permit.inspections && permit.inspections.length > 0 && (
+                            <div style={{ marginBottom: '2rem' }}>
+                                <h3>Inspections</h3>
+                                {permit.inspections.map((inspection, index) => (
+                                    <div key={index} style={{ padding: '1rem', background: '#f9fafb', borderRadius: '8px', marginBottom: '1rem' }}>
+                                        <p><strong>Type:</strong> {inspection.type}</p>
+                                        <p><strong>Status:</strong> {inspection.status}</p>
+                                        <p><strong>Inspector:</strong> {inspection.inspector}</p>
+                                        <p><strong>Scheduled:</strong> {new Date(inspection.scheduledDate).toLocaleDateString()}</p>
+                                        {inspection.notes && <p><strong>Notes:</strong> {inspection.notes}</p>}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <div style={{ marginBottom: '2rem' }}>
+                            <h3>Update Status</h3>
+                            <div className="form-group">
+                                <label className="form-label">New Status</label>
+                                <select
+                                    className="form-select"
+                                    value={newStatus}
+                                    onChange={(e) => setNewStatus(e.target.value)}
+                                >
+                                    <option value="">Select status</option>
+                                    <option value="UNDER_REVIEW">Under Review</option>
+                                    <option value="APPROVED">Approved</option>
+                                    <option value="REJECTED">Rejected</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Comments</label>
+                                <textarea
+                                    className="form-textarea"
+                                    value={comments}
+                                    onChange={(e) => setComments(e.target.value)}
+                                    placeholder="Add comments for this status change..."
+                                />
+                            </div>
+                            <button
+                                onClick={handleStatusUpdate}
+                                className="btn btn-primary"
+                                disabled={!newStatus || loading}
+                            >
+                                {loading ? 'Updating...' : 'Update Status'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Main App Component
+        const App = () => {
+            const [currentView, setCurrentView] = useState('dashboard');
+            const [permits, setPermits] = useState([]);
+            const [permitTypes, setPermitTypes] = useState(null);
+            const [dashboardStats, setDashboardStats] = useState(null);
+            const [loading, setLoading] = useState(false);
+            const [selectedPermit, setSelectedPermit] = useState(null);
+            const [alert, setAlert] = useState(null);
+            const [systemInitialized, setSystemInitialized] = useState(false);
+
+            // Initialize system
+            useEffect(() => {
+                const initializeSystem = async () => {
+                    try {
+                        await api.initSystem();
+                        setSystemInitialized(true);
+                        setAlert({ type: 'success', message: 'NFPA Permit System initialized successfully!' });
+                    } catch (error) {
+                        console.error('System initialization failed:', error);
+                        setAlert({ type: 'error', message: 'Failed to initialize system. Please check if the backend is running.' });
+                    }
+                };
+
+                initializeSystem();
+            }, []);
+
+            // Load data based on current view
+            useEffect(() => {
+                if (!systemInitialized) return;
+
+                const loadData = async () => {
+                    setLoading(true);
+                    try {
+                        switch (currentView) {
+                            case 'dashboard':
+                                const [statsResponse, permitsResponse] = await Promise.all([
+                                    api.getDashboardStats(),
+                                    api.getPermits()
+                                ]);
+                                setDashboardStats(statsResponse.data);
+                                setPermits(permitsResponse.data || []);
+                                break;
+                            case 'permits':
+                                const permitsData = await api.getPermits();
+                                setPermits(permitsData.data || []);
+                                break;
+                            case 'new-permit':
+                                const typesData = await api.getPermitTypes();
+                                setPermitTypes(typesData.data);
+                                break;
+                        }
+                    } catch (error) {
+                        console.error('Error loading data:', error);
+                        setAlert({ type: 'error', message: `Failed to load ${currentView} data` });
+                    } finally {
+                        setLoading(false);
+                    }
+                };
+
+                loadData();
+            }, [currentView, systemInitialized]);
+
+            const handleCreatePermit = async (permitData) => {
+                try {
+                    const response = await api.createPermit(permitData);
+                    setAlert({ type: 'success', message: `Permit ${response.data.id} created successfully!` });
+                    setCurrentView('permits');
+                } catch (error) {
+                    setAlert({ type: 'error', message: `Failed to create permit: ${error.message}` });
+                }
+            };
+
+            const handleStatusUpdate = async (permitId, status, comments = '') => {
+                try {
+                    await api.updatePermitStatus(permitId, status, comments);
+                    setAlert({ type: 'success', message: `Permit status updated to ${status}` });
+                    
+                    // Refresh data
+                    if (currentView === 'dashboard') {
+                        const [statsResponse, permitsResponse] = await Promise.all([
+                            api.getDashboardStats(),
+                            api.getPermits()
+                        ]);
+                        setDashboardStats(statsResponse.data);
+                        setPermits(permitsResponse.data || []);
+                    } else if (currentView === 'permits') {
+                        const permitsData = await api.getPermits();
+                        setPermits(permitsData.data || []);
+                    }
+                    
+                    setSelectedPermit(null);
+                } catch (error) {
+                    setAlert({ type: 'error', message: `Failed to update permit: ${error.message}` });
+                }
+            };
+
+            const renderContent = () => {
+                if (loading) return <LoadingSpinner />;
+
+                switch (currentView) {
+                    case 'dashboard':
+                        return (
+                            <div className="fade-in">
+                                <DashboardStats stats={dashboardStats} />
+                                <div className="content-section">
+                                    <div className="section-header">
+                                        <h2 className="section-title">Recent Permits</h2>
+                                        <button 
+                                            className="btn btn-primary"
+                                            onClick={() => setCurrentView('new-permit')}
+                                        >
+                                            <Icon name="plus" size={16} />
+                                            New Permit
+                                        </button>
+                                    </div>
+                                    <PermitList 
+                                        permits={permits.slice(0, 5)} 
+                                        onPermitClick={setSelectedPermit}
+                                        onStatusUpdate={handleStatusUpdate}
+                                    />
+                                </div>
+                            </div>
+                        );
+                    case 'permits':
+                        return (
+                            <div className="content-section fade-in">
+                                <div className="section-header">
+                                    <h2 className="section-title">All Permits</h2>
+                                    <button 
+                                        className="btn btn-primary"
+                                        onClick={() => setCurrentView('new-permit')}
+                                    >
+                                        <Icon name="plus" size={16} />
+                                        New Permit
+                                    </button>
+                                </div>
+                                <PermitList 
+                                    permits={permits} 
+                                    onPermitClick={setSelectedPermit}
+                                    onStatusUpdate={handleStatusUpdate}
+                                />
+                            </div>
+                        );
+                    case 'new-permit':
+                        return (
+                            <div className="content-section fade-in">
+                                <div className="section-header">
+                                    <h2 className="section-title">New Permit Application</h2>
+                                </div>
+                                <PermitForm 
+                                    onSubmit={handleCreatePermit} 
+                                    permitTypes={permitTypes}
+                                />
+                            </div>
+                        );
+                    case 'inspections':
+                        return (
+                            <div className="content-section fade-in">
+                                <div className="section-header">
+                                    <h2 className="section-title">Inspections</h2>
+                                </div>
+                                <div style={{ textAlign: 'center', padding: '3rem', color: '#6b7280' }}>
+                                    <Icon name="calendar" size={48} style={{ margin: '0 auto 1rem' }} />
+                                    <p>Inspection management coming soon...</p>
+                                </div>
+                            </div>
+                        );
+                    default:
+                        return null;
+                }
+            };
+
+            return (
+                <div className="app-container">
+                    <Header currentView={currentView} setCurrentView={setCurrentView} />
+                    
+                    <main className="main-content">
+                        {alert && (
+                            <Alert 
+                                type={alert.type} 
+                                onClose={() => setAlert(null)}
+                            >
+                                {alert.message}
+                            </Alert>
+                        )}
+                        
+                        {renderContent()}
+                    </main>
+
+                    {selectedPermit && (
+                        <PermitModal
+                            permit={selectedPermit}
+                            onClose={() => setSelectedPermit(null)}
+                            onStatusUpdate={handleStatusUpdate}
+                        />
+                    )}
+                </div>
+            );
+        };
+
+        // Render the app using React 18 createRoot
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

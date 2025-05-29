@@ -1,0 +1,44 @@
+{
+  "id": "PROGRESS_1748463293101_ytysrq5km",
+  "permitId": "PERMIT_1000_1748463293018",
+  "contractorId": "CONT001",
+  "contractorName": "ABC Fire Protection",
+  "submissionDate": "2025-05-28T20:14:53.101Z",
+  "workType": "Fire Alarm Installation",
+  "percentComplete": 65,
+  "milestone": "Device Installation Complete",
+  "description": "All fire alarm devices have been installed and wired. System testing to begin.",
+  "photos": [
+    {
+      "id": "PROGRESS_PHOTO_1748463293101",
+      "filename": "progress_PERMIT_1000_1748463293018_PROGRESS_1748463293101_ytysrq5km_1748463293101.jpg",
+      "path": "uploads/field/progress/progress_PERMIT_1000_1748463293018_PROGRESS_1748463293101_ytysrq5km_1748463293101.jpg",
+      "thumbnailPath": "uploads/field/progress/thumb_progress_PERMIT_1000_1748463293018_PROGRESS_1748463293101_ytysrq5km_1748463293101.jpg",
+      "uploadTime": "2025-05-28T20:14:53.103Z",
+      "size": 21
+    },
+    {
+      "id": "PROGRESS_PHOTO_1748463293103",
+      "filename": "progress_PERMIT_1000_1748463293018_PROGRESS_1748463293101_ytysrq5km_1748463293103.jpg",
+      "path": "uploads/field/progress/progress_PERMIT_1000_1748463293018_PROGRESS_1748463293101_ytysrq5km_1748463293103.jpg",
+      "thumbnailPath": "uploads/field/progress/thumb_progress_PERMIT_1000_1748463293018_PROGRESS_1748463293101_ytysrq5km_1748463293103.jpg",
+      "uploadTime": "2025-05-28T20:14:53.104Z",
+      "size": 21
+    }
+  ],
+  "nextSteps": [
+    "System programming",
+    "Functional testing",
+    "Final inspection"
+  ],
+  "requestInspection": true,
+  "estimatedCompletion": "2025-06-15",
+  "analysis": {
+    "qualityScore": 75,
+    "completionAssessment": "substantial_progress",
+    "recommendations": [
+      "Continue monitoring progress"
+    ],
+    "flaggedIssues": []
+  }
+}

@@ -1,0 +1,8 @@
+
+Hydraulic Calculation Summary
+System Type: Wet Pipe Sprinkler
+Flow Rate: 25 GPM
+Pressure: 15 PSI
+Coverage: 130 sq ft per sprinkler
+NFPA 13 compliance verified
+        

@@ -1,0 +1,8 @@
+node_modules/
+.env*
+database/postgresql/data/
+*.log
+.aws/
+terraform/*.tfstate*
+terraform/.terraform/
+wallet/

@@ -1,0 +1,43 @@
+{
+  "name": "nfpa-permit-system-enhanced",
+  "version": "2.0.0",
+  "description": "Enhanced NFPA Fire Safety Permit Management System with OCR, Mobile, and AI",
+  "main": "enhanced-web-server-v2.js",
+  "scripts": {
+    "start": "node enhanced-web-server-v2.js",
+    "dev": "nodemon enhanced-web-server-v2.js",
+    "test": "node test-enhanced-system.js",
+    "clean": "rm -rf uploads/* processed/* qr-codes/*"
+  },
+  "keywords": [
+    "nfpa",
+    "fire-safety", 
+    "permits",
+    "ocr",
+    "mobile",
+    "ai"
+  ],
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "tesseract.js": "5.1.0",
+    "pdf-parse": "1.1.1",
+    "node-xlsx": "0.21.0",
+    "mammoth": "1.6.0",
+    "file-type": "18.7.0",
+    "mime-types": "2.1.35",
+    "sharp": "0.32.6",
+    "jimp": "0.22.12",
+    "natural": "6.12.0",
+    "compromise": "14.10.0",
+    "qrcode": "1.5.3",
+    "multer": "1.4.5-lts.1",
+    "archiver": "6.0.1",
+    "express-rate-limit": "6.10.0",
+    "axios": "1.6.0",
+    "form-data": "4.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFPA Permit Management System - Government Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="css/dashboard.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <i class="fas fa-fire-flame-curved"></i>
+                <h1>Vetria.ai</h1>
+                <span class="version">NFPA Permit Management System</span>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-label">System Status</span>
+                    <span class="stat-value online">
+                        <i class="fas fa-circle"></i> ONLINE
+                    </span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Blockchain</span>
+                    <span class="stat-value connected">
+                        <i class="fas fa-link"></i> CONNECTED
+                    </span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Current User</span>
+                    <span class="stat-value">Fire Marshal Admin</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <button class="nav-btn active" data-section="overview">
+                <i class="fas fa-tachometer-alt"></i> Overview
+            </button>
+            <button class="nav-btn" data-section="permits">
+                <i class="fas fa-file-alt"></i> Active Permits
+            </button>
+            <button class="nav-btn" data-section="analysis">
+                <i class="fas fa-chart-line"></i> NFPA Analysis
+            </button>
+            <button class="nav-btn" data-section="blockchain">
+                <i class="fas fa-cubes"></i> Blockchain
+            </button>
+            <button class="nav-btn" data-section="inspections">
+                <i class="fas fa-search"></i> Inspections
+            </button>
+            <button class="nav-btn" data-section="ai-insights">
+                <i class="fas fa-brain"></i> AI Insights
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Overview Section -->
+        <section id="overview" class="content-section active">
+            <div class="section-header">
+                <h2><i class="fas fa-tachometer-alt"></i> System Overview</h2>
+                <div class="real-time-indicator">
+                    <i class="fas fa-circle pulse"></i> Live Data
+                </div>
+            </div>
+
+            <!-- Key Metrics Grid -->
+            <div class="metrics-grid">
+                <div class="metric-card critical">
+                    <div class="metric-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3>Active Permits</h3>
+                        <div class="metric-number">6</div>
+                        <div class="metric-label">Currently Processing</div>
+                    </div>
+                </div>
+
+                <div class="metric-card success">
+                    <div class="metric-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3>Avg Compliance</h3>
+                        <div class="metric-number">87.3%</div>
+                        <div class="metric-label">NFPA Standards</div>
+                    </div>
+                </div>
+
+                <div class="metric-card warning">
+                    <div class="metric-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3>Critical Issues</h3>
+                        <div class="metric-number">23</div>
+                        <div class="metric-label">Need Attention</div>
+                    </div>
+                </div>
+
+                <div class="metric-card info">
+                    <div class="metric-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3>Revenue (Q1)</h3>
+                        <div class="metric-number">$2.8M</div>
+                        <div class="metric-label">+18.3% YoY</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="chart-container">
+                    <h3>NFPA Code Compliance Trends</h3>
+                    <canvas id="complianceChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Permit Processing Time</h3>
+                    <canvas id="processingChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Jurisdiction Performance -->
+            <div class="jurisdiction-grid">
+                <h3>Multi-Jurisdiction Performance</h3>
+                <div class="jurisdiction-cards">
+                    <div class="jurisdiction-card">
+                        <h4>Metro City Fire Dept</h4>
+                        <div class="jurisdiction-stats">
+                            <div class="stat">
+                                <span class="label">Permits:</span>
+                                <span class="value">156</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Approval Rate:</span>
+                                <span class="value success">94%</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Avg Processing:</span>
+                                <span class="value">11.2 days</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="jurisdiction-card">
+                        <h4>Chemical Valley Industrial</h4>
+                        <div class="jurisdiction-stats">
+                            <div class="stat">
+                                <span class="label">Permits:</span>
+                                <span class="value">23</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Approval Rate:</span>
+                                <span class="value warning">87%</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Avg Processing:</span>
+                                <span class="value">15.8 days</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="jurisdiction-card">
+                        <h4>Health City Medical</h4>
+                        <div class="jurisdiction-stats">
+                            <div class="stat">
+                                <span class="label">Permits:</span>
+                                <span class="value">45</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Approval Rate:</span>
+                                <span class="value success">96%</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Avg Processing:</span>
+                                <span class="value">9.1 days</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Demo Section -->
+            <div class="demo-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-rocket"></i> Live Demonstration Portal</h3>
+                    <div class="demo-controls">
+                        <button class="btn-primary" onclick="runPOCDemo()">
+                            <i class="fas fa-play"></i> Run Complete POC Demo
+                        </button>
+                    </div>
+                </div>
+
+                <div class="demo-grid">
+                    <!-- Upload New Permit -->
+                    <div class="demo-card">
+                        <h4><i class="fas fa-upload"></i> Upload New Permit Application</h4>
+                        <div class="upload-section">
+                            <form id="permit-upload-form" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label>Project Name:</label>
+                                    <input type="text" id="project-name" placeholder="e.g., Downtown Fire Safety Upgrade" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Applicant Organization:</label>
+                                    <input type="text" id="applicant-org" placeholder="e.g., ABC Fire Protection Inc." required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Project Type:</label>
+                                    <select id="project-type" required>
+                                        <option value="">Select Type</option>
+                                        <option value="commercial">Commercial Building</option>
+                                        <option value="industrial">Industrial Facility</option>
+                                        <option value="healthcare">Healthcare Facility</option>
+                                        <option value="residential">Residential Complex</option>
+                                        <option value="educational">Educational Institution</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Estimated Cost:</label>
+                                    <input type="number" id="project-cost" placeholder="1000000" min="1000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>NFPA Codes Applicable:</label>
+                                    <select id="nfpa-codes-select" multiple size="8" style="height: 200px;">
+                                        <optgroup label="Fire Code & General">
+                                            <option value="NFPA 1">NFPA 1 - Fire Code</option>
+                                            <option value="NFPA 5000">NFPA 5000 - Building Construction and Safety Code</option>
+                                        </optgroup>
+                                        <optgroup label="Fire Suppression Systems">
+                                            <option value="NFPA 11">NFPA 11 - Low-, Medium-, and High-Expansion Foam</option>
+                                            <option value="NFPA 12">NFPA 12 - Carbon Dioxide Extinguishing Systems</option>
+                                            <option value="NFPA 13">NFPA 13 - Installation of Sprinkler Systems</option>
+                                            <option value="NFPA 13D">NFPA 13D - Installation of Sprinkler Systems in One- and Two-Family Dwellings</option>
+                                            <option value="NFPA 13R">NFPA 13R - Installation of Sprinkler Systems in Low-Rise Residential Occupancies</option>
+                                            <option value="NFPA 14">NFPA 14 - Installation of Standpipe and Hose Systems</option>
+                                            <option value="NFPA 15">NFPA 15 - Water Spray Fixed Systems for Fire Protection</option>
+                                            <option value="NFPA 16">NFPA 16 - Installation of Foam-Water Sprinkler and Foam-Water Spray Systems</option>
+                                            <option value="NFPA 17">NFPA 17 - Dry Chemical Extinguishing Systems</option>
+                                            <option value="NFPA 17A">NFPA 17A - Wet Chemical Extinguishing Systems</option>
+                                            <option value="NFPA 18">NFPA 18 - Wetting Agents</option>
+                                            <option value="NFPA 20">NFPA 20 - Installation of Stationary Pumps for Fire Protection</option>
+                                            <option value="NFPA 24">NFPA 24 - Installation of Private Fire Service Mains and Their Appurtenances</option>
+                                            <option value="NFPA 25">NFPA 25 - Inspection, Testing, and Maintenance of Water-Based Fire Protection Systems</option>
+                                        </optgroup>
+                                        <optgroup label="Fire Detection & Alarm">
+                                            <option value="NFPA 72">NFPA 72 - National Fire Alarm and Signaling Code</option>
+                                            <option value="NFPA 720">NFPA 720 - Standard for the Installation of Carbon Monoxide Detection and Warning Equipment</option>
+                                        </optgroup>
+                                        <optgroup label="Life Safety & Building">
+                                            <option value="NFPA 80">NFPA 80 - Fire Doors and Other Opening Protectives</option>
+                                            <option value="NFPA 90A">NFPA 90A - Installation of Air-Conditioning and Ventilating Systems</option>
+                                            <option value="NFPA 90B">NFPA 90B - Installation of Warm Air Heating and Air-Conditioning Systems</option>
+                                            <option value="NFPA 92">NFPA 92 - Standard for Smoke Control Systems</option>
+                                            <option value="NFPA 96">NFPA 96 - Ventilation Control and Fire Protection of Commercial Cooking Operations</option>
+                                            <option value="NFPA 101">NFPA 101 - Life Safety Code</option>
+                                            <option value="NFPA 102">NFPA 102 - Grandstands, Folding and Telescopic Seating, Tents, and Membrane Structures</option>
+                                        </optgroup>
+                                        <optgroup label="Emergency Power & Electrical">
+                                            <option value="NFPA 70">NFPA 70 - National Electrical Code</option>
+                                            <option value="NFPA 70B">NFPA 70B - Recommended Practice for Electrical Equipment Maintenance</option>
+                                            <option value="NFPA 110">NFPA 110 - Emergency and Standby Power Systems</option>
+                                            <option value="NFPA 111">NFPA 111 - Stored Electrical Energy Emergency and Standby Power Systems</option>
+                                        </optgroup>
+                                        <optgroup label="Hazardous Materials">
+                                            <option value="NFPA 30">NFPA 30 - Flammable and Combustible Liquids Code</option>
+                                            <option value="NFPA 30A">NFPA 30A - Code for Motor Fuel Dispensing Facilities and Repair Garages</option>
+                                            <option value="NFPA 30B">NFPA 30B - Code for the Manufacture and Storage of Aerosol Products</option>
+                                            <option value="NFPA 31">NFPA 31 - Installation of Oil-Burning Equipment</option>
+                                            <option value="NFPA 32">NFPA 32 - Standard for Drycleaning Plants</option>
+                                            <option value="NFPA 33">NFPA 33 - Standard for Spray Application Using Flammable or Combustible Materials</option>
+                                            <option value="NFPA 34">NFPA 34 - Standard for Dipping, Coating, and Printing Processes Using Flammable or Combustible Liquids</option>
+                                            <option value="NFPA 35">NFPA 35 - Standard for the Manufacture of Organic Coatings</option>
+                                            <option value="NFPA 36">NFPA 36 - Standard for Solvent Extraction Plants</option>
+                                            <option value="NFPA 37">NFPA 37 - Installation and Use of Stationary Combustion Engines and Gas Turbines</option>
+                                            <option value="NFPA 45">NFPA 45 - Fire Protection for Laboratories Using Chemicals</option>
+                                            <option value="NFPA 54">NFPA 54 - National Fuel Gas Code</option>
+                                            <option value="NFPA 55">NFPA 55 - Compressed Gases and Cryogenic Fluids Code</option>
+                                            <option value="NFPA 58">NFPA 58 - Liquefied Petroleum Gas Code</option>
+                                            <option value="NFPA 59">NFPA 59 - Utility LP-Gas Plant Code</option>
+                                            <option value="NFPA 59A">NFPA 59A - Production, Storage, and Handling of Liquefied Natural Gas (LNG)</option>
+                                        </optgroup>
+                                        <optgroup label="Special Occupancies">
+                                            <option value="NFPA 99">NFPA 99 - Health Care Facilities Code</option>
+                                            <option value="NFPA 130">NFPA 130 - Standard for Fixed Guideway Transit and Passenger Rail Systems</option>
+                                            <option value="NFPA 409">NFPA 409 - Standard on Aircraft Hangars</option>
+                                            <option value="NFPA 415">NFPA 415 - Standard on Airport Terminal Buildings, Fueling Ramp Drainage, and Loading Walkways</option>
+                                            <option value="NFPA 418">NFPA 418 - Standard for Heliports</option>
+                                        </optgroup>
+                                        <optgroup label="Clean Agents & Special Systems">
+                                            <option value="NFPA 75">NFPA 75 - Standard for the Fire Protection of Information Technology Equipment</option>
+                                            <option value="NFPA 76">NFPA 76 - Standard for the Fire Protection of Telecommunications Facilities</option>
+                                            <option value="NFPA 2001">NFPA 2001 - Standard on Clean Agent Fire Extinguishing Systems</option>
+                                        </optgroup>
+                                        <optgroup label="Other Codes">
+                                            <option value="OTHER">Other - Specify in Notes</option>
+                                        </optgroup>
+                                    </select>
+                                    <small>Hold Ctrl (Cmd on Mac) to select multiple codes. Select "Other" if your specific code isn't listed.</small>
+                                </div>
+                                <div class="form-group" id="other-codes-group" style="display: none;">
+                                    <label>Other NFPA Codes (specify):</label>
+                                    <input type="text" id="other-nfpa-codes" placeholder="e.g., NFPA 170, NFPA 204, NFPA 230">
+                                    <small>Enter specific NFPA code numbers separated by commas</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Upload Plans/Documents:</label>
+                                    <input type="file" id="permit-files" multiple accept=".pdf,.dwg,.jpg,.png">
+                                    <small>Supported: PDF, DWG, JPG, PNG (Max 50MB each)</small>
+                                </div>
+                                <button type="submit" class="btn-submit">
+                                    <i class="fas fa-paper-plane"></i> Submit Permit Application
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Closeout Demo -->
+                    <div class="demo-card">
+                        <h4><i class="fas fa-tasks"></i> Permit Closeout Demonstration</h4>
+                        <p>Test the complete permit closeout workflow with document upload and digital signatures.</p>
+                        
+                        <div class="closeout-demo">
+                            <h5>Select Permit for Closeout Demo:</h5>
+                            <select id="demo-permit-select">
+                                <option value="DEMO_001">DEMO_001 - Office Complex</option>
+                                <option value="DEMO_002">DEMO_002 - Chemical Facility</option>
+                                <option value="DEMO_003">DEMO_003 - Hospital Systems</option>
+                            </select>
+
+                            <div class="demo-buttons">
+                                <button class="btn-demo" onclick="simulateCloseoutStep('initiate')">
+                                    <i class="fas fa-play"></i> 1. Initiate Closeout
+                                </button>
+                                <button class="btn-demo" onclick="simulateCloseoutStep('upload_documents')">
+                                    <i class="fas fa-upload"></i> 2. Upload Documents
+                                </button>
+                                <button class="btn-demo" onclick="simulateCloseoutStep('process_signatures')">
+                                    <i class="fas fa-signature"></i> 3. Collect Signatures
+                                </button>
+                                <button class="btn-demo" onclick="simulateCloseoutStep('close_permit')">
+                                    <i class="fas fa-check-circle"></i> 4. Close Permit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Document Upload for Existing Permits -->
+                    <div class="demo-card">
+                        <h4><i class="fas fa-file-upload"></i> Upload Closeout Documents</h4>
+                        <p>Upload acceptance cards and as-built drawings for permit closure.</p>
+                        
+                        <form id="closeout-upload-form" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label>Select Permit:</label>
+                                <select id="closeout-permit-id" required>
+                                    <option value="">Choose Permit</option>
+                                    <option value="DEMO_001">DEMO_001 - Office Complex</option>
+                                    <option value="DEMO_002">DEMO_002 - Chemical Facility</option>
+                                    <option value="DEMO_003">DEMO_003 - Hospital Systems</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Acceptance Card:</label>
+                                <input type="file" name="acceptance_card" accept=".pdf,.jpg,.png" required>
+                            </div>
+                            <div class="form-group">
+                                <label>As-Built Drawings:</label>
+                                <input type="file" name="as_built" accept=".pdf,.dwg,.jpg,.png" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Uploaded By:</label>
+                                <input type="text" id="uploaded-by" placeholder="Your Name/Organization" required>
+                            </div>
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload Closeout Documents
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Active Permits Section -->
+        <section id="permits" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-file-alt"></i> Active Permits</h2>
+                <button class="btn-primary" onclick="runPOCDemo()">
+                    <i class="fas fa-play"></i> Run Live Demo
+                </button>
+            </div>
+
+            <div class="permits-table-container">
+                <table class="permits-table">
+                    <thead>
+                        <tr>
+                            <th>Permit ID</th>
+                            <th>Project Name</th>
+                            <th>Applicant</th>
+                            <th>NFPA Codes</th>
+                            <th>Compliance</th>
+                            <th>Status</th>
+                            <th>Est. Cost</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="permits-tbody">
+                        <tr>
+                            <td><strong>DEMO_001</strong></td>
+                            <td>Downtown Office Complex Fire Safety Upgrade</td>
+                            <td>Metro Fire Protection Systems Inc.</td>
+                            <td>
+                                <div class="nfpa-codes">
+                                    <span class="nfpa-badge nfpa-1">NFPA 1</span>
+                                    <span class="nfpa-badge nfpa-13">NFPA 13</span>
+                                    <span class="nfpa-badge nfpa-72">NFPA 72</span>
+                                    <span class="nfpa-badge">+5 more</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="compliance-bar">
+                                    <div class="compliance-fill" style="width: 42%"></div>
+                                    <span class="compliance-text">42%</span>
+                                </div>
+                            </td>
+                            <td><span class="status approved">APPROVED</span></td>
+                            <td>$1,250,000</td>
+                            <td>
+                                <button class="btn-action" onclick="viewPermitDetails('DEMO_001')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-action" onclick="analyzeNFPA('DEMO_001')">
+                                    <i class="fas fa-chart-bar"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>DEMO_002</strong></td>
+                            <td>Chemical Processing Facility Fire Suppression</td>
+                            <td>Advanced Chemical Solutions LLC</td>
+                            <td>
+                                <div class="nfpa-codes">
+                                    <span class="nfpa-badge nfpa-11">NFPA 11</span>
+                                    <span class="nfpa-badge nfpa-12">NFPA 12</span>
+                                    <span class="nfpa-badge nfpa-30">NFPA 30</span>
+                                    <span class="nfpa-badge">+5 more</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="compliance-bar">
+                                    <div class="compliance-fill" style="width: 87%"></div>
+                                    <span class="compliance-text">87%</span>
+                                </div>
+                            </td>
+                            <td><span class="status approved">APPROVED</span></td>
+                            <td>$2,100,000</td>
+                            <td>
+                                <button class="btn-action" onclick="viewPermitDetails('DEMO_002')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-action" onclick="analyzeNFPA('DEMO_002')">
+                                    <i class="fas fa-chart-bar"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>DEMO_003</strong></td>
+                            <td>Hospital Emergency Power & Life Safety Systems</td>
+                            <td>Healthcare Systems Engineering Corp</td>
+                            <td>
+                                <div class="nfpa-codes">
+                                    <span class="nfpa-badge nfpa-99">NFPA 99</span>
+                                    <span class="nfpa-badge nfpa-110">NFPA 110</span>
+                                    <span class="nfpa-badge nfpa-101">NFPA 101</span>
+                                    <span class="nfpa-badge">+4 more</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="compliance-bar">
+                                    <div class="compliance-fill" style="width: 45%"></div>
+                                    <span class="compliance-text">45%</span>
+                                </div>
+                            </td>
+                            <td><span class="status conditional">CONDITIONAL</span></td>
+                            <td>$3,200,000</td>
+                            <td>
+                                <button class="btn-action" onclick="viewPermitDetails('DEMO_003')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-action" onclick="analyzeNFPA('DEMO_003')">
+                                    <i class="fas fa-chart-bar"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- NFPA Analysis Section -->
+        <section id="analysis" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-line"></i> NFPA Code Analysis</h2>
+                <div class="analysis-controls">
+                    <select id="nfpa-code-filter">
+                        <option value="all">All NFPA Codes</option>
+                        <option value="NFPA 13">NFPA 13 - Sprinklers</option>
+                        <option value="NFPA 72">NFPA 72 - Fire Alarms</option>
+                        <option value="NFPA 101">NFPA 101 - Life Safety</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="analysis-grid">
+                <div class="analysis-card">
+                    <h3>NFPA 13 - Sprinkler Systems</h3>
+                    <div class="analysis-content">
+                        <div class="compliance-score large">91%</div>
+                        <div class="score-label">First-time Compliance</div>
+                        <div class="analysis-details">
+                            <div class="detail-item">
+                                <span class="label">Most Common Issue:</span>
+                                <span class="value">Coverage gaps in storage areas</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Projects Analyzed:</span>
+                                <span class="value">4 of 6</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Critical Issues:</span>
+                                <span class="value critical">15 found</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>NFPA 72 - Fire Alarm Systems</h3>
+                    <div class="analysis-content">
+                        <div class="compliance-score large">89%</div>
+                        <div class="score-label">First-time Compliance</div>
+                        <div class="analysis-details">
+                            <div class="detail-item">
+                                <span class="label">Most Common Issue:</span>
+                                <span class="value">Notification appliance coverage</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Projects Analyzed:</span>
+                                <span class="value">5 of 6</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Critical Issues:</span>
+                                <span class="value critical">12 found</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>NFPA 101 - Life Safety Code</h3>
+                    <div class="analysis-content">
+                        <div class="compliance-score large">85%</div>
+                        <div class="score-label">First-time Compliance</div>
+                        <div class="analysis-details">
+                            <div class="detail-item">
+                                <span class="label">Most Common Issue:</span>
+                                <span class="value">Egress capacity calculations</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Projects Analyzed:</span>
+                                <span class="value">6 of 6</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Critical Issues:</span>
+                                <span class="value critical">3 found</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Analysis Chart -->
+            <div class="chart-container full-width">
+                <h3>NFPA Requirements Coverage Analysis</h3>
+                <canvas id="nfpaAnalysisChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Blockchain Section -->
+        <section id="blockchain" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-cubes"></i> Blockchain Verification</h2>
+                <div class="blockchain-status">
+                    <i class="fas fa-check-circle"></i> Network Healthy
+                </div>
+            </div>
+
+            <div class="blockchain-grid">
+                <div class="blockchain-card">
+                    <h3>Network Status</h3>
+                    <div class="blockchain-metrics">
+                        <div class="metric">
+                            <span class="label">Connected Peers:</span>
+                            <span class="value">4/4</span>
+                        </div>
+                        <div class="metric">
+                            <span class="label">Block Height:</span>
+                            <span class="value">1,247</span>
+                        </div>
+                        <div class="metric">
+                            <span class="label">Last Block:</span>
+                            <span class="value">2 mins ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="blockchain-card">
+                    <h3>Recent Transactions</h3>
+                    <div class="transaction-list">
+                        <div class="transaction-item">
+                            <div class="tx-hash">PERMIT_1748456130985</div>
+                            <div class="tx-time">5 minutes ago</div>
+                            <div class="tx-status confirmed">Confirmed</div>
+                        </div>
+                        <div class="transaction-item">
+                            <div class="tx-hash">INSPECTION_174845600123</div>
+                            <div class="tx-time">12 minutes ago</div>
+                            <div class="tx-status confirmed">Confirmed</div>
+                        </div>
+                        <div class="transaction-item">
+                            <div class="tx-hash">APPROVAL_174845589456</div>
+                            <div class="tx-time">18 minutes ago</div>
+                            <div class="tx-status confirmed">Confirmed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="blockchain-card">
+                    <h3>Multi-Org Endorsement</h3>
+                    <div class="endorsement-list">
+                        <div class="endorsement-item approved">
+                            <i class="fas fa-check"></i>
+                            <span>City Fire Department</span>
+                        </div>
+                        <div class="endorsement-item approved">
+                            <i class="fas fa-check"></i>
+                            <span>State Fire Marshal</span>
+                        </div>
+                        <div class="endorsement-item approved">
+                            <i class="fas fa-check"></i>
+                            <span>Building Department</span>
+                        </div>
+                        <div class="endorsement-item approved">
+                            <i class="fas fa-check"></i>
+                            <span>Environmental Agency</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Insights Section -->
+        <section id="ai-insights" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-brain"></i> AI-Powered Insights</h2>
+                <div class="ai-status">
+                    <i class="fas fa-robot"></i> AI Engine Active
+                </div>
+            </div>
+
+            <div class="insights-grid">
+                <div class="insight-card predictive">
+                    <div class="insight-header">
+                        <i class="fas fa-crystal-ball"></i>
+                        <h3>Predictive Analysis</h3>
+                    </div>
+                    <div class="insight-content">
+                        <div class="prediction">
+                            <strong>94% probability</strong> of approval for DEMO_001 with minor revisions
+                        </div>
+                        <div class="prediction">
+                            <strong>DEMO_002</strong> requires specialized hazmat inspector (recommended: INS_002)
+                        </div>
+                        <div class="prediction">
+                            <strong>Weather impact:</strong> Construction delays likely for Q4 projects
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-card optimization">
+                    <div class="insight-header">
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>Optimization Recommendations</h3>
+                    </div>
+                    <div class="insight-content">
+                        <div class="recommendation">
+                            <strong>Cost Optimization:</strong> Integrated fire alarm/security systems could save 15%
+                        </div>
+                        <div class="recommendation">
+                            <strong>Process Improvement:</strong> Pre-submission consultations reduce revisions by 40%
+                        </div>
+                        <div class="recommendation">
+                            <strong>Resource Allocation:</strong> Focus inspectors on NFPA 101 compliance gaps
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-card performance">
+                    <div class="insight-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Performance Metrics</h3>
+                    </div>
+                    <div class="insight-content">
+                        <div class="performance-metric">
+                            <span class="metric-label">Processing Time:</span>
+                            <span class="metric-value">12.3 days avg</span>
+                            <span class="metric-trend positive">↓ 30%</span>
+                        </div>
+                        <div class="performance-metric">
+                            <span class="metric-label">Inspector Efficiency:</span>
+                            <span class="metric-value">89%</span>
+                            <span class="metric-trend positive">↑ 5%</span>
+                        </div>
+                        <div class="performance-metric">
+                            <span class="metric-label">Customer Satisfaction:</span>
+                            <span class="metric-value">4.7/5.0</span>
+                            <span class="metric-trend positive">↑ 0.3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-time Analysis Feed -->
+            <div class="analysis-feed">
+                <h3>Real-time Analysis Feed</h3>
+                <div id="analysis-feed-content">
+                    <div class="feed-item">
+                        <div class="feed-time">Just now</div>
+                        <div class="feed-content">
+                            <i class="fas fa-exclamation-triangle text-warning"></i>
+                            High number of critical issues detected in DEMO_001 - recommend pre-submission consultation
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-time">2 mins ago</div>
+                        <div class="feed-content">
+                            <i class="fas fa-lightbulb text-info"></i>
+                            DEMO_002: Consider phased implementation to spread costs over multiple fiscal years
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-time">5 mins ago</div>
+                        <div class="feed-content">
+                            <i class="fas fa-chart-line text-success"></i>
+                            Processing time improved by 15% this quarter compared to last quarter
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Demo Output Modal -->
+    <div id="demo-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Live POC Demonstration Output</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <pre id="demo-output"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

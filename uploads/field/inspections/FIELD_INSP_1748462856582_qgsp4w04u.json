@@ -1,0 +1,30 @@
+{
+  "id": "FIELD_INSP_1748462856582_qgsp4w04u",
+  "permitId": "PERMIT_1000_1748462856513",
+  "inspectorId": "INS001",
+  "inspectorName": "John Inspector",
+  "timestamp": "2025-05-28T20:07:36.582Z",
+  "location": "Main electrical room",
+  "inspectionType": "progress",
+  "findings": [
+    "Fire alarm panel installed",
+    "Wiring in progress"
+  ],
+  "status": "in_progress",
+  "photos": [
+    {
+      "id": "PHOTO_1748462856582",
+      "originalName": "inspection-photo.jpg",
+      "filename": "PERMIT_1000_1748462856513_FIELD_INSP_1748462856582_qgsp4w04u_1748462856582_inspection-photo.jpg",
+      "originalPath": "uploads/field/inspections/PERMIT_1000_1748462856513_FIELD_INSP_1748462856582_qgsp4w04u_1748462856582_inspection-photo.jpg",
+      "thumbnailPath": "uploads/field/inspections/thumb_PERMIT_1000_1748462856513_FIELD_INSP_1748462856582_qgsp4w04u_1748462856582_inspection-photo.jpg",
+      "size": 26,
+      "uploadTime": "2025-05-28T20:07:36.590Z"
+    }
+  ],
+  "geoLocation": {
+    "lat": 40.7128,
+    "lng": -74.006
+  },
+  "notes": "Installation proceeding according to plans"
+}

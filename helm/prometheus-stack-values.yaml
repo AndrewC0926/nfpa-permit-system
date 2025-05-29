@@ -1,0 +1,520 @@
+# Prometheus Stack Helm Chart Configuration
+# File: helm/prometheus-stack-values.yaml
+prometheus:
+  prometheusSpec:
+    retention: 30d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 100Gi
+    
+    additionalScrapeConfigs:
+      - job_name: 'nfpa-backend'
+        kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+              names:
+                - nfpa-permit-system
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name]
+            action: keep
+            regex: nfpa-backend-service
+
+grafana:
+  enabled: true
+  adminPassword: "secure-admin-password"
+  persistence:
+    enabled: true
+    storageClassName: gp3
+    size: 10Gi
+  
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'nfpa-dashboards'
+        orgId: 1
+        folder: 'NFPA System'
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/nfpa
+  
+  dashboards:
+    nfpa-dashboards:
+      nfpa-overview:
+        gnetId: 13770
+        revision: 1
+        datasource: Prometheus
+      
+      kubernetes-cluster:
+        gnetId: 7249
+        revision: 1
+        datasource: Prometheus
+
+alertmanager:
+  enabled: true
+  config:
+    global:
+      smtp_smarthost: 'smtp.yourdomain.com:587'
+      smtp_from: 'alerts@yourdomain.com'
+      smtp_auth_username: 'alerts@yourdomain.com'
+      smtp_auth_password: 'email-password'
+    
+    route:
+      group_by: ['alertname']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 1h
+      receiver: 'web.hook'
+      routes:
+      - match:
+          alertname: NFPASystemDown
+        receiver: critical-alerts
+      - match:
+          severity: warning
+        receiver: warning-alerts
+    
+    receivers:
+    - name: 'web.hook'
+      webhook_configs:
+      - url: 'http://localhost:5001/'
+    
+    - name: 'critical-alerts'
+      email_configs:
+      - to: 'admin@yourdomain.com'
+        subject: 'CRITICAL: {{ .GroupLabels.alertname }}'
+        body: |
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          {{ end }}
+    
+    - name: 'warning-alerts'
+      email_configs:
+      - to: 'support@yourdomain.com'
+        subject: 'WARNING: {{ .GroupLabels.alertname }}'
+
+  persistence:
+    enabled: true
+    storageClassName: gp3
+    size: 10Gi
+
+---
+# ELK Stack Configuration for Logging
+# File: helm/elasticsearch-values.yaml
+elasticsearch:
+  replicas: 3
+  minimumMasterNodes: 2
+  
+  esConfig:
+    elasticsearch.yml: |
+      cluster.name: "nfpa-logs"
+      network.host: 0.0.0.0
+      discovery.seed_hosts: "elasticsearch-master-headless"
+      cluster.initial_master_nodes: "elasticsearch-master-0,elasticsearch-master-1,elasticsearch-master-2"
+      xpack.security.enabled: false
+      xpack.monitoring.collection.enabled: true
+  
+  volumeClaimTemplate:
+    storageClassName: gp3
+    accessModes: [ "ReadWriteOnce" ]
+    resources:
+      requests:
+        storage: 100Gi
+  
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "2Gi"
+    limits:
+      cpu: "2000m"
+      memory: "4Gi"
+
+kibana:
+  enabled: true
+  replicas: 2
+  
+  elasticsearchHosts: "http://elasticsearch-master:9200"
+  
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: kibana-auth
+    hosts:
+      - host: kibana.nfpa-permits.yourdomain.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: kibana-tls
+        hosts:
+          - kibana.nfpa-permits.yourdomain.com
+
+logstash:
+  enabled: true
+  replicas: 2
+  
+  logstashConfig:
+    logstash.yml: |
+      http.host: 0.0.0.0
+      xpack.monitoring.elasticsearch.hosts: ["http://elasticsearch-master:9200"]
+  
+  logstashPipeline:
+    logstash.conf: |
+      input {
+        beats {
+          port => 5044
+        }
+      }
+      
+      filter {
+        if [kubernetes][container][name] == "nfpa-backend" {
+          json {
+            source => "message"
+          }
+          
+          mutate {
+            add_field => { "[@metadata][index]" => "nfpa-backend" }
+          }
+        }
+        
+        if [kubernetes][container][name] == "fabric-peer" {
+          mutate {
+            add_field => { "[@metadata][index]" => "fabric-peer" }
+          }
+        }
+      }
+      
+      output {
+        elasticsearch {
+          hosts => ["elasticsearch-master:9200"]
+          index => "%{[@metadata][index]}-%{+YYYY.MM.dd}"
+        }
+      }
+
+filebeat:
+  enabled: true
+  
+  filebeatConfig:
+    filebeat.yml: |
+      filebeat.inputs:
+      - type: container
+        paths:
+          - /var/log/containers/*.log
+        processors:
+        - add_kubernetes_metadata:
+            host: ${NODE_NAME}
+            matchers:
+            - logs_path:
+                logs_path: "/var/log/containers/"
+      
+      output.logstash:
+        hosts: ["logstash-logstash:5044"]
+
+---
+# Security Tools Configuration
+# File: helm/falco-values.yaml
+falco:
+  enabled: true
+  
+  image:
+    registry: docker.io
+    repository: falcosecurity/falco-no-driver
+    tag: 0.36.2
+  
+  driver:
+    enabled: false
+  
+  collectors:
+    containerd:
+      enabled: true
+      socket: /run/containerd/containerd.sock
+  
+  falcoctl:
+    artifact:
+      install:
+        enabled: true
+      follow:
+        enabled: true
+    indexes:
+    - name: falcosecurity
+      url: https://falcosecurity.github.io/falcoctl/index.yaml
+  
+  customRules:
+    nfpa-rules.yaml: |
+      - rule: NFPA Backend High CPU Usage
+        desc: Detect when NFPA backend uses high CPU
+        condition: >
+          k8s_audit and
+          ka.target.name contains "nfpa-backend" and
+          ka.verb = "create"
+        output: High CPU usage detected in NFPA backend (user=%ka.user.name verb=%ka.verb resource=%ka.target.resource reason=%ka.response_reason)
+        priority: WARNING
+      
+      - rule: Unauthorized Access to NFPA Secrets
+        desc: Detect unauthorized access to NFPA secrets
+        condition: >
+          k8s_audit and
+          ka.target.name contains "nfpa-secrets" and
+          ka.verb in (get, list) and
+          not ka.user.name in (system:serviceaccount:nfpa-permit-system:nfpa-backend)
+        output: Unauthorized access to NFPA secrets (user=%ka.user.name verb=%ka.verb resource=%ka.target.resource)
+        priority: CRITICAL
+
+  falco:
+    grpc:
+      enabled: true
+      bind_address: "0.0.0.0:5060"
+      threadiness: 8
+    
+    grpc_output:
+      enabled: true
+    
+    file_output:
+      enabled: true
+      keep_alive: false
+      filename: ./events.txt
+    
+    stdout_output:
+      enabled: true
+    
+    webserver:
+      enabled: true
+      listen_port: 8765
+      k8s_healthz_endpoint: /healthz
+      ssl_enabled: false
+    
+    rules_file:
+      - /etc/falco/falco_rules.yaml
+      - /etc/falco/k8s_audit_rules.yaml
+      - /etc/falco/rules.d/nfpa-rules.yaml
+
+---
+# Istio Service Mesh Configuration
+# File: helm/istio-values.yaml
+istio:
+  pilot:
+    resources:
+      requests:
+        cpu: 500m
+        memory: 2048Mi
+    env:
+      EXTERNAL_ISTIOD: false
+      PILOT_ENABLE_WORKLOAD_ENTRY_AUTOREGISTRATION: true
+  
+  global:
+    meshID: mesh1
+    multiCluster:
+      clusterName: nfpa-cluster
+    network: network1
+    
+    proxy:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 2000m
+          memory: 1024Mi
+    
+    tracer:
+      lightstep: {}
+      zipkin: {}
+      datadog: {}
+      stackdriver:
+        debug: false
+        maxNumberOfAttributes: 200
+        maxNumberOfAnnotations: 200
+        maxNumberOfMessageEvents: 200
+
+gateway:
+  name: nfpa-gateway
+  
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "nfpa-permits.yourdomain.com"
+    tls:
+      httpsRedirect: true
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    hosts:
+    - "nfpa-permits.yourdomain.com"
+    tls:
+      mode: SIMPLE
+      credentialName: nfpa-tls-secret
+
+virtualService:
+  name: nfpa-vs
+  
+  http:
+  - match:
+    - uri:
+        prefix: /api
+    route:
+    - destination:
+        host: nfpa-backend-service
+        port:
+          number: 3001
+    timeout: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 10s
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: nfpa-frontend-service
+        port:
+          number: 80
+
+destinationRule:
+  name: nfpa-backend-dr
+  
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 50
+        maxRequestsPerConnection: 10
+    loadBalancer:
+      simple: LEAST_CONN
+    outlierDetection:
+      consecutiveErrors: 3
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50
+
+---
+# Backup and Disaster Recovery
+# File: helm/velero-values.yaml
+velero:
+  initContainers:
+    - name: velero-plugin-for-aws
+      image: velero/velero-plugin-for-aws:v1.8.0
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - mountPath: /target
+          name: plugins
+  
+  configuration:
+    provider: aws
+    backupStorageLocation:
+      name: default
+      provider: aws
+      bucket: nfpa-velero-backups
+      config:
+        region: us-east-1
+        s3ForcePathStyle: false
+    
+    volumeSnapshotLocation:
+      name: default
+      provider: aws
+      config:
+        region: us-east-1
+  
+  credentials:
+    useSecret: true
+    secretContents:
+      cloud: |
+        [default]
+        aws_access_key_id=AKIA...
+        aws_secret_access_key=...
+  
+  schedules:
+    nfpa-daily-backup:
+      disabled: false
+      schedule: "0 2 * * *"
+      template:
+        ttl: "720h0m0s"
+        includedNamespaces:
+        - nfpa-permit-system
+        excludedResources:
+        - secrets
+        snapshotVolumes: true
+    
+    nfpa-weekly-backup:
+      disabled: false
+      schedule: "0 1 * * 0"
+      template:
+        ttl: "4320h0m0s"
+        includedNamespaces:
+        - nfpa-permit-system
+        snapshotVolumes: true
+
+---
+# Network Policies for Security
+# File: helm/network-policies.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: nfpa-default-deny
+  namespace: nfpa-permit-system
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: nfpa-backend-policy
+  namespace: nfpa-permit-system
+spec:
+  podSelector:
+    matchLabels:
+      app: nfpa-backend
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: istio-system
+    - podSelector:
+        matchLabels:
+          app: nfpa-frontend
+  - ports:
+    - protocol: TCP
+      port: 3001
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: postgres
+    ports:
+    - protocol: TCP
+      port: 5432
+  - to:
+    - podSelector:
+        matchLabels:
+          app: redis
+    ports:
+    - protocol: TCP
+      port: 6379
+  - to:
+    - podSelector:
+        matchLabels:
+          app: fabric-peer
+    ports:
+    - protocol: TCP
+      port: 7051

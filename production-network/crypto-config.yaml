@@ -1,0 +1,55 @@
+# Production Crypto Configuration for Multi-Org NFPA Network
+OrdererOrgs:
+  - Name: OrdererOrg
+    Domain: orderer.nfpa.gov
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: orderer0
+        SANS:
+          - localhost
+          - 127.0.0.1
+          - orderer0.orderer.nfpa.gov
+      - Hostname: orderer1
+        SANS:
+          - localhost
+          - 127.0.0.1
+          - orderer1.orderer.nfpa.gov
+      - Hostname: orderer2
+        SANS:
+          - localhost
+          - 127.0.0.1
+          - orderer2.orderer.nfpa.gov
+
+PeerOrganizations:
+  - Name: CityFireDept
+    Domain: city.nfpa.gov
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+      SANS:
+        - localhost
+        - 127.0.0.1
+    Users:
+      Count: 3
+    
+  - Name: StateFMO
+    Domain: state.nfpa.gov
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+      SANS:
+        - localhost
+        - 127.0.0.1
+    Users:
+      Count: 3
+      
+  - Name: FederalAgency
+    Domain: federal.nfpa.gov
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+      SANS:
+        - localhost
+        - 127.0.0.1
+    Users:
+      Count: 3

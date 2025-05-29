@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Test</title>
+</head>
+<body style="background: white; font-family: Arial; padding: 20px;">
+    <h1 style="color: black;">Debug Test</h1>
+    <p>If you see this, HTML works.</p>
+    <div id="test" style="background: lightblue; padding: 10px;">
+        JavaScript not loaded yet...
+    </div>
+    
+    <script>
+        console.log('JavaScript starting...');
+        document.getElementById('test').innerHTML = 
+            '<strong style="color: green;">✅ JavaScript works!</strong>';
+        console.log('JavaScript completed successfully');
+    </script>
+</body>
+</html>

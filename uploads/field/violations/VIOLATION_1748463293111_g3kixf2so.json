@@ -1,0 +1,31 @@
+{
+  "id": "VIOLATION_1748463293111_g3kixf2so",
+  "permitId": "PERMIT_1000_1748463293018",
+  "reportedBy": "Inspector Jane Smith",
+  "reportDate": "2025-05-28T20:14:53.111Z",
+  "violationType": "Code Violation",
+  "severity": "medium",
+  "description": "Fire alarm device installed at incorrect height per NFPA 72",
+  "location": "Corridor B, second floor",
+  "codeReferences": [
+    "NFPA 72"
+  ],
+  "photos": [
+    {
+      "id": "VIOLATION_PHOTO_1748463293111",
+      "filename": "violation_PERMIT_1000_1748463293018_VIOLATION_1748463293111_g3kixf2so_1748463293111.jpg",
+      "path": "uploads/field/violations/violation_PERMIT_1000_1748463293018_VIOLATION_1748463293111_g3kixf2so_1748463293111.jpg",
+      "thumbnailPath": "uploads/field/violations/thumb_violation_PERMIT_1000_1748463293018_VIOLATION_1748463293111_g3kixf2so_1748463293111.jpg",
+      "uploadTime": "2025-05-28T20:14:53.113Z",
+      "evidenceType": "photo"
+    }
+  ],
+  "status": "open",
+  "actionRequired": true,
+  "deadline": "2025-06-10",
+  "autoAnalysis": {
+    "computedSeverity": "medium",
+    "riskFactors": [],
+    "urgency": "normal"
+  }
+}

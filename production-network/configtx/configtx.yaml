@@ -1,0 +1,185 @@
+# Production Configuration for Multi-Organization NFPA Network
+
+Organizations:
+    - &OrdererOrg
+        Name: OrdererMSP
+        ID: OrdererMSP
+        MSPDir: ../organizations/ordererOrganizations/orderer.nfpa.gov/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+        OrdererEndpoints:
+            - orderer0.orderer.nfpa.gov:7050
+            - orderer1.orderer.nfpa.gov:8050
+            - orderer2.orderer.nfpa.gov:9050
+
+    - &CityFireDept
+        Name: CityFireDeptMSP
+        ID: CityFireDeptMSP
+        MSPDir: ../organizations/peerOrganizations/city.nfpa.gov/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('CityFireDeptMSP.admin', 'CityFireDeptMSP.peer', 'CityFireDeptMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('CityFireDeptMSP.admin', 'CityFireDeptMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('CityFireDeptMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('CityFireDeptMSP.peer')"
+
+    - &StateFMO
+        Name: StateFMOMSP
+        ID: StateFMOMSP
+        MSPDir: ../organizations/peerOrganizations/state.nfpa.gov/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('StateFMOMSP.admin', 'StateFMOMSP.peer', 'StateFMOMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('StateFMOMSP.admin', 'StateFMOMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('StateFMOMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('StateFMOMSP.peer')"
+
+    - &FederalAgency
+        Name: FederalAgencyMSP
+        ID: FederalAgencyMSP
+        MSPDir: ../organizations/peerOrganizations/federal.nfpa.gov/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('FederalAgencyMSP.admin', 'FederalAgencyMSP.peer', 'FederalAgencyMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('FederalAgencyMSP.admin', 'FederalAgencyMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('FederalAgencyMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('FederalAgencyMSP.peer')"
+
+Capabilities:
+    Channel: &ChannelCapabilities
+        V2_0: true
+    Orderer: &OrdererCapabilities
+        V2_0: true
+    Application: &ApplicationCapabilities
+        V2_0: true
+
+Application: &ApplicationDefaults
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+# Production-Grade Raft Consensus Configuration
+Orderer: &OrdererDefaults
+    OrdererType: etcdraft
+    Addresses:
+        - orderer0.orderer.nfpa.gov:7050
+        - orderer1.orderer.nfpa.gov:8050
+        - orderer2.orderer.nfpa.gov:9050
+    EtcdRaft:
+        Consenters:
+        - Host: orderer0.orderer.nfpa.gov
+          Port: 7050
+          ClientTLSCert: ../organizations/ordererOrganizations/orderer.nfpa.gov/orderers/orderer0.orderer.nfpa.gov/tls/server.crt
+          ServerTLSCert: ../organizations/ordererOrganizations/orderer.nfpa.gov/orderers/orderer0.orderer.nfpa.gov/tls/server.crt
+        - Host: orderer1.orderer.nfpa.gov
+          Port: 8050
+          ClientTLSCert: ../organizations/ordererOrganizations/orderer.nfpa.gov/orderers/orderer1.orderer.nfpa.gov/tls/server.crt
+          ServerTLSCert: ../organizations/ordererOrganizations/orderer.nfpa.gov/orderers/orderer1.orderer.nfpa.gov/tls/server.crt
+        - Host: orderer2.orderer.nfpa.gov
+          Port: 9050
+          ClientTLSCert: ../organizations/ordererOrganizations/orderer.nfpa.gov/orderers/orderer2.orderer.nfpa.gov/tls/server.crt
+          ServerTLSCert: ../organizations/ordererOrganizations/orderer.nfpa.gov/orderers/orderer2.orderer.nfpa.gov/tls/server.crt
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+    Capabilities:
+        <<: *OrdererCapabilities
+
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ChannelCapabilities
+
+Profiles:
+    ThreeOrgsOrdererGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            NFPAConsortium:
+                Organizations:
+                    - *CityFireDept
+                    - *StateFMO
+                    - *FederalAgency
+                    
+    NFPAPermitsChannel:
+        Consortium: NFPAConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *CityFireDept
+                - *StateFMO
+                - *FederalAgency
