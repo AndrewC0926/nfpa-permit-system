@@ -1,0 +1,34 @@
+{
+  "integrations": {
+    "tyler": {
+      "enabled": true,
+      "endpoint": "https://api.tylertech.com",
+      "modules": ["EnerGov", "iasWorld", "CUBS"]
+    },
+    "accela": {
+      "enabled": true,
+      "endpoint": "https://api.accela.com"
+    },
+    "gis": {
+      "enabled": true,
+      "provider": "ArcGIS",
+      "endpoint": "https://services.arcgis.com"
+    },
+    "municipus": {
+      "enabled": true,
+      "features": ["property_lookup", "billing", "citizen_portal"]
+    }
+  },
+  "tenants": {
+    "springfield": {
+      "name": "City of Springfield",
+      "domain": "springfield-il.gov",
+      "integrations": ["tyler", "gis", "municipus"]
+    },
+    "chicago": {
+      "name": "City of Chicago", 
+      "domain": "chicago.gov",
+      "integrations": ["accela", "gis"]
+    }
+  }
+}
