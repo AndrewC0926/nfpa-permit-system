@@ -6,3 +6,33 @@ database/postgresql/data/
 terraform/*.tfstate*
 terraform/.terraform/
 wallet/
+# Environment files
+.env
+.env.local
+.env.production
+
+# Crypto material and certificates
+*.pem
+*.key
+**/keystore/
+**/crypto-config/
+
+# Node modules
+node_modules/
+npm-debug.log*
+
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+*.sqlite
+
+# Temporary files
+tmp/
+temp/
+
+# OS files
+.DS_Store
+Thumbs.db
