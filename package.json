@@ -1,0 +1,38 @@
+{
+  "name": "nfpa-permit-system",
+  "version": "2.0.0",
+  "description": "Enterprise NFPA Fire Safety Permit Management System",
+  "main": "backend/src/server.js",
+  "scripts": {
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "dev": "docker-compose up -d",
+    "prod": "docker-compose -f docker-compose.prod.yml up -d",
+    "test": "cd backend && npm test",
+    "test:api": "./scripts/testing/test-api.sh",
+    "deploy:dev": "./scripts/deployment/deploy-dev.sh",
+    "deploy:prod": "./scripts/deployment/deploy-prod.sh",
+    "clean": "docker-compose down -v && docker system prune -f"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AndrewC0926/nfpa-permit-system.git"
+  },
+  "keywords": [
+    "nfpa",
+    "fire-safety",
+    "permits",
+    "government",
+    "enterprise",
+    "compliance",
+    "blockchain",
+    "api"
+  ],
+  "author": "Andrew Crane",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
