@@ -1,0 +1,86 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Dependencies
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build output
+dist
+build
+coverage
+*.log
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+__tests__
+*.test.js
+*.spec.js
+jest.config.js
+
+# Documentation
+docs
+*.md
+!README.md
+
+# Temporary files
+*.tmp
+*.temp
+.cache
+
+# Backup files
+*.bak
+*.backup
+backup/
+
+# Monitoring
+prometheus.yml
+alertmanager.yml
+alert.rules
+grafana/
+
+# Development
+docker-compose*.yml
+!docker-compose.yml
+!docker-compose.blockchain.yml
+!docker-compose.monitoring.yml
+
+# Blockchain
+channel-artifacts/
+crypto-config/
+ledger-backup/
+
+logs/
+dist/
+coverage/
+.env
+.env.*
+.DS_Store
+*.log
+npm-debug.log*
+.idea/
+.vscode/
+frontend/node_modules/
+frontend/dist/
+backend/node_modules/
+backend/dist/
+backend/logs/
+backend/coverage/ 

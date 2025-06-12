@@ -1,0 +1,104 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["CI/CD Rootless Pipeline"]
+    branches: [main]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+          
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        
+      - name: Build and push backend container
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: nfpa-permit-backend
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd backend
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          
+      - name: Deploy backend to ECS
+        run: |
+          aws ecs update-service --cluster nfpa-permit-cluster \
+            --service backend-service \
+            --force-new-deployment
+            
+      - name: Deploy frontend to S3
+        run: |
+          aws s3 sync frontend/build/ s3://${{ secrets.S3_BUCKET }} \
+            --delete \
+            --cache-control "max-age=31536000,public"
+            
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+            
+      - name: Verify deployment
+        run: |
+          # Wait for ECS service to stabilize
+          aws ecs wait services-stable \
+            --cluster nfpa-permit-cluster \
+            --services backend-service
+            
+          # Run health checks
+          curl -f https://api.${{ secrets.DOMAIN }}/health || exit 1
+          curl -f https://${{ secrets.DOMAIN }}/ || exit 1
+          
+      - name: Notify on success
+        if: success()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: deployments
+          SLACK_COLOR: good
+          SLACK_TITLE: Deployment Successful
+          SLACK_MESSAGE: 'Successfully deployed to production :rocket:'
+          
+      - name: Notify on failure
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: deployments
+          SLACK_COLOR: danger
+          SLACK_TITLE: Deployment Failed
+          SLACK_MESSAGE: 'Deployment failed :x:'
+          
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          # Rollback ECS service to previous version
+          aws ecs update-service --cluster nfpa-permit-cluster \
+            --service backend-service \
+            --task-definition $(aws ecs describe-task-definition --task-definition nfpa-permit-backend --query 'taskDefinition.taskDefinitionArn' --output text)
+            
+          # Restore previous frontend version from S3
+          aws s3 sync s3://${{ secrets.S3_BUCKET }}/backup/ s3://${{ secrets.S3_BUCKET }} \
+            --delete 

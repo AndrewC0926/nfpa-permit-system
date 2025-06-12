@@ -1,0 +1,107 @@
+groups:
+  - name: system
+    rules:
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High CPU usage detected
+          description: "Instance {{ $labels.instance }} has high CPU usage ({{ $value }}%)"
+
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High memory usage detected
+          description: "Instance {{ $labels.instance }} has high memory usage ({{ $value }}%)"
+
+      - alert: HighDiskUsage
+        expr: (node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_free_bytes{mountpoint="/"}) / node_filesystem_size_bytes{mountpoint="/"} * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High disk usage detected
+          description: "Instance {{ $labels.instance }} has high disk usage ({{ $value }}%)"
+
+  - name: application
+    rules:
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) * 100 > 5
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: High error rate detected
+          description: "Error rate is {{ $value }}%"
+
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High latency detected
+          description: "95th percentile latency is {{ $value }}s"
+
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: Service is down
+          description: "Service {{ $labels.job }} on {{ $labels.instance }} is down"
+
+  - name: blockchain
+    rules:
+      - alert: HighBlockchainLatency
+        expr: blockchain_peer_latency_seconds > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High blockchain latency
+          description: "Blockchain peer {{ $labels.peer }} has high latency ({{ $value }}s)"
+
+      - alert: BlockchainPeerDown
+        expr: blockchain_peer_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: Blockchain peer is down
+          description: "Blockchain peer {{ $labels.peer }} is down"
+
+      - alert: HighTransactionQueue
+        expr: blockchain_transaction_queue_size > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High transaction queue
+          description: "Transaction queue size is {{ $value }}"
+
+  - name: mongodb
+    rules:
+      - alert: MongoDBConnectionsHigh
+        expr: mongodb_connections > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High MongoDB connections
+          description: "MongoDB has {{ $value }} connections"
+
+      - alert: MongoDBReplicationLag
+        expr: mongodb_replication_lag_seconds > 30
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High MongoDB replication lag
+          description: "MongoDB replication lag is {{ $value }}s" 

@@ -1,0 +1,155 @@
+version: '3.8'
+
+services:
+  orderer:
+    image: hyperledger/fabric-orderer:2.5
+    user: "1000:1000"
+    environment:
+      - FABRIC_CFG_PATH=/etc/hyperledger/fabric
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    volumes:
+      - ./blockchain/channel-artifacts:/var/hyperledger/orderer
+      - ./blockchain/organizations/ordererOrganizations/permit.com/orderers/orderer.permit.com/msp:/var/hyperledger/orderer/msp
+      - ./blockchain/organizations/ordererOrganizations/permit.com/orderers/orderer.permit.com/tls:/var/hyperledger/orderer/tls
+      - ./blockchain/organizations/ordererOrganizations/permit.com/orderers/orderer.permit.com/production:/var/hyperledger/production
+    ports:
+      - "7050:7050"
+    networks:
+      - permit-network
+
+  peer0-org1:
+    image: hyperledger/fabric-peer:2.5
+    user: "1000:1000"
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=permit-network
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.org1.permit.com
+      - CORE_PEER_ADDRESS=peer0.org1.permit.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.permit.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.permit.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.permit.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./blockchain/organizations/peerOrganizations/org1.permit.com/peers/peer0.org1.permit.com/msp:/etc/hyperledger/fabric/msp
+      - ./blockchain/organizations/peerOrganizations/org1.permit.com/peers/peer0.org1.permit.com/tls:/etc/hyperledger/fabric/tls
+      - ./blockchain/organizations/peerOrganizations/org1.permit.com/peers/peer0.org1.permit.com/production:/var/hyperledger/production
+    ports:
+      - "7051:7051"
+      - "7052:7052"
+    depends_on:
+      - orderer
+    networks:
+      - permit-network
+
+  peer0-org2:
+    image: hyperledger/fabric-peer:2.5
+    user: "1000:1000"
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=permit-network
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.org2.permit.com
+      - CORE_PEER_ADDRESS=peer0.org2.permit.com:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org2.permit.com:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.permit.com:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.permit.com:8051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./blockchain/organizations/peerOrganizations/org2.permit.com/peers/peer0.org2.permit.com/msp:/etc/hyperledger/fabric/msp
+      - ./blockchain/organizations/peerOrganizations/org2.permit.com/peers/peer0.org2.permit.com/tls:/etc/hyperledger/fabric/tls
+      - ./blockchain/organizations/peerOrganizations/org2.permit.com/peers/peer0.org2.permit.com/production:/var/hyperledger/production
+    ports:
+      - "8051:8051"
+      - "8052:8052"
+    depends_on:
+      - orderer
+    networks:
+      - permit-network
+
+  ca-org1:
+    image: hyperledger/fabric-ca:1.5
+    user: "1000:1000"
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-org1
+      - FABRIC_CA_SERVER_TLS_ENABLED=false
+      - FABRIC_CA_SERVER_PORT=7054
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:9443
+      - FABRIC_CA_SERVER_DEBUG=true
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server/ca-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server/ca-key.pem -b admin:adminpw'
+    volumes:
+      - ./blockchain/organizations/peerOrganizations/org1.permit.com/ca:/etc/hyperledger/fabric-ca-server
+    ports:
+      - "7054:7054"
+      - "9443:9443"
+    networks:
+      - permit-network
+
+  ca-org2:
+    image: hyperledger/fabric-ca:1.5
+    user: "1000:1000"
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-org2
+      - FABRIC_CA_SERVER_TLS_ENABLED=false
+      - FABRIC_CA_SERVER_PORT=8054
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:9444
+      - FABRIC_CA_SERVER_DEBUG=true
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server/ca-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server/ca-key.pem -b admin:adminpw'
+    volumes:
+      - ./blockchain/organizations/peerOrganizations/org2.permit.com/ca:/etc/hyperledger/fabric-ca-server
+    ports:
+      - "8054:8054"
+      - "9444:9444"
+    networks:
+      - permit-network
+
+  ca-orderer:
+    image: hyperledger/fabric-ca:1.5
+    user: "1000:1000"
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-orderer
+      - FABRIC_CA_SERVER_TLS_ENABLED=false
+      - FABRIC_CA_SERVER_PORT=9054
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:9445
+      - FABRIC_CA_SERVER_DEBUG=true
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server/ca-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server/ca-key.pem -b admin:adminpw'
+    volumes:
+      - ./blockchain/organizations/ordererOrganizations/permit.com/ca:/etc/hyperledger/fabric-ca-server
+    ports:
+      - "9054:9054"
+      - "9445:9445"
+    networks:
+      - permit-network
+
+networks:
+  permit-network:
+    driver: bridge 

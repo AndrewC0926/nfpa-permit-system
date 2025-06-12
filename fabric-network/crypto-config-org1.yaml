@@ -1,0 +1,18 @@
+PeerOrgs:
+  - Name: Org1
+    Domain: org1.permit.com
+    EnableNodeOUs: true
+    CA:
+      Country: US
+      Province: California
+      Locality: San Francisco
+      OrganizationalUnit: Hyperledger Fabric
+      StreetAddress: address for org
+      PostalCode: 94105
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+        - 127.0.0.1
+    Users:
+      Count: 1 

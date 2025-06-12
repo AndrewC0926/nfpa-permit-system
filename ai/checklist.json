@@ -1,0 +1,16 @@
+[
+  {"id": "project_name", "description": "Project Name provided", "required": true},
+  {"id": "site_address", "description": "Site address included", "required": true},
+  {"id": "project_description", "description": "Project description, size of building, number of floors above and below grade, proposed ERRCS design description included", "required": true},
+  {"id": "contractor_contact", "description": "Contractor contact information for designer and installation provider included", "required": true},
+  {"id": "bda_model", "description": "Proposed BDA Model (S/N if available) specified", "required": true},
+  {"id": "mode_of_operation", "description": "Proposed mode of operation (Class A or Channelized Class B) specified", "required": true},
+  {"id": "project_timeline", "description": "Proposed project timeline included", "required": true},
+  {"id": "plan_set", "description": "Plan set in digital format submitted to portal for approval", "required": true},
+  {"id": "fire_jurisdiction_compliance", "description": "Submittal compliant with local Fire Jurisdiction and planning department's requirements", "required": true},
+  {"id": "architectural_prints", "description": "Architectural size D (36\" x 24\") building prints (in PDF) included", "required": true},
+  {"id": "equipment_location", "description": "Proposed location of all powered system equipment within structure included", "required": true},
+  {"id": "bda_fcc_id", "description": "BDA FCC ID# (Type Acceptancy Approval for the device) included", "required": true},
+  {"id": "customer_contact", "description": "Customer contact (name, tel., address) included", "required": true},
+  {"id": "operational_configuration", "description": "Proposed operational configuration (Class A or Channelized Class B) included", "required": true}
+] 

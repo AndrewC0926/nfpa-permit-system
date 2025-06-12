@@ -1,0 +1,205 @@
+peer:
+    id: peer0.city.permit.com
+    networkId: permit-network
+    listenAddress: 0.0.0.0:7051
+    address: 0.0.0.0:7051
+    addressAutoDetect: false
+    keepalive:
+        minInterval: 60s
+        client:
+            interval: 60s
+            timeout: 20s
+        deliveryClient:
+            interval: 60s
+            timeout: 20s
+
+    gossip:
+        bootstrap: peer0.city.permit.com:7051
+        useLeaderElection: true
+        orgLeader: false
+        membershipTrackerInterval: 5s
+        endpoint:
+        maxBlockCountToStore: 100
+        maxPropagationBurstLatency: 10ms
+        maxPropagationBurstSize: 10
+        propagateIterations: 1
+        propagatePeerNum: 3
+        pullInterval: 4s
+        pullPeerNum: 3
+        requestStateInfoInterval: 4s
+        publishStateInfoInterval: 4s
+        stateInfoRetentionInterval:
+        publishCertPeriod: 10s
+        skipBlockVerification: false
+        dialTimeout: 3s
+        connTimeout: 2s
+        recvBuffSize: 20
+        sendBuffSize: 200
+        digestWaitTime: 1s
+        requestWaitTime: 1s
+        responseWaitTime: 2s
+        aliveTimeInterval: 5s
+        aliveExpirationTimeout: 25s
+        reconnectInterval: 25s
+        maxConnectionAttempts: 120
+        msgExpirationFactor: 20
+        externalEndpoint:
+
+    tls:
+        enabled: true
+        clientAuthRequired: false
+        cert:
+            file: tls/server.crt
+        key:
+            file: tls/server.key
+        rootcert:
+            file: tls/ca.crt
+        clientRootCAs:
+            files:
+              - tls/ca.crt
+
+    authentication:
+        timewindow: 15m
+
+    fileSystemPath: /var/hyperledger/production
+
+    BCCSP:
+        Default: SW
+        SW:
+            Hash: SHA2
+            Security: 256
+            FileKeyStore:
+                KeyStore: /etc/hyperledger/fabric/msp/keystore
+
+    mspConfigPath: msp
+    localMspId: CityMSP
+
+    client:
+        connTimeout: 3s
+
+    deliveryclient:
+        reconnectTotalTimeThreshold: 3600s
+        connTimeout: 3s
+        reConnectBackoffThreshold: 3600s
+
+    localMspType: bccsp
+
+    profile:
+        enabled: false
+        listenAddress: 0.0.0.0:6060
+
+    adminService:
+        listenAddress: 0.0.0.0:7053
+
+    handlers:
+        authFilters:
+          - name: DefaultAuth
+        decorators:
+          - name: DefaultDecorator
+        endorsers:
+          escc:
+            name: DefaultEndorsement
+        validators:
+          vscc:
+            name: DefaultValidation
+
+    validatorPoolSize:
+
+    discovery:
+        enabled: true
+        authCacheEnabled: true
+        authCacheMaxSize: 1000
+        authCachePurgeRetentionRatio: 0.75
+        orgMembersAllowedAccess: false
+
+vm:
+    endpoint: unix:///host/var/run/docker.sock
+    docker:
+        tls:
+            enabled: false
+            ca:
+                file: docker/ca.crt
+            cert:
+                file: docker/tls.crt
+            key:
+                file: docker/tls.key
+        attachStdout: false
+        hostConfig:
+            NetworkMode: host
+            Dns:
+            LogConfig:
+                Type: json-file
+                Config:
+                    max-size: "50m"
+                    max-file: "5"
+            Memory: 2147483648
+
+chaincode:
+    id:
+        path:
+        name:
+    builder: hyperledger/fabric-ccenv:2.4.1
+    pull: true
+    golang:
+        runtime: hyperledger/fabric-baseos:2.4.1
+        dynamicLink: false
+    car:
+        runtime: hyperledger/fabric-baseos:2.4.1
+    java:
+        runtime: hyperledger/fabric-javaenv:2.4.1
+    node:
+        runtime: hyperledger/fabric-nodeenv:2.4.1
+    startuptimeout: 600s
+    executetimeout: 120s
+    mode: net
+    keepalive: 0
+    system:
+        _lifecycle: enable
+        cscc: enable
+        lscc: enable
+        escc: enable
+        vscc: enable
+        qscc: enable
+    logging:
+        level:  debug
+        shim:   debug
+        format: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}'
+
+ledger:
+    blockchain:
+    state:
+        stateDatabase: goleveldb
+        totalQueryLimit: 100000
+        couchDBConfig:
+            couchDBAddress: localhost:5984
+            username:
+            password:
+            maxRetries: 3
+            maxRetriesOnStartup: 10
+            requestTimeout: 35s
+            internalQueryLimit: 1000
+            maxBatchUpdateSize: 1000
+            warmIndexesAfterNBlocks: 1
+            createGlobalChangesDB: false
+    history:
+        enableHistoryDatabase: true
+
+operations:
+    listenAddress: 0.0.0.0:9443
+    tls:
+        enabled: false
+        cert:
+            file:
+        key:
+            file:
+        clientAuthRequired: false
+        clientRootCAs:
+            files: []
+
+metrics:
+    provider: disabled
+    statsd:
+        network: udp
+        address: 127.0.0.1:8125
+        writeInterval: 10s
+        prefix: 

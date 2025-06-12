@@ -1,0 +1,46 @@
+{
+    "name": "permit-network",
+    "version": "1.0.0",
+    "client": {
+        "organization": "City",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    },
+    "organizations": {
+        "City": {
+            "mspid": "CityMSP",
+            "peers": ["peer0.city.permit.com"],
+            "certificateAuthorities": ["ca.city.permit.com"]
+        }
+    },
+    "peers": {
+        "peer0.city.permit.com": {
+            "url": "grpcs://localhost:7051",
+            "tlsCACerts": {
+                "path": "../organizations/peerOrganizations/city.permit.com/peers/peer0.city.permit.com/tls/ca.crt"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.city.permit.com",
+                "hostnameOverride": "peer0.city.permit.com"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.city.permit.com": {
+            "url": "https://localhost:7054",
+            "caName": "ca.city.permit.com",
+            "tlsCACerts": {
+                "path": "../organizations/peerOrganizations/city.permit.com/ca/ca.city.permit.com-cert.pem"
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+} 

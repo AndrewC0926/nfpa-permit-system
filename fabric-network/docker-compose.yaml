@@ -1,0 +1,83 @@
+version: '2'
+
+volumes:
+  orderer.permit.com:
+  peer0.org1.permit.com:
+
+networks:
+  permit:
+
+services:
+  orderer.permit.com:
+    container_name: orderer.permit.com
+    image: hyperledger/fabric-orderer:2.5.0
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7050
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+      - ./system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./organizations/ordererOrganizations/permit.com/orderers/orderer.permit.com/msp:/var/hyperledger/orderer/msp
+      - orderer.permit.com:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+    networks:
+      - permit
+
+  peer0.org1.permit.com:
+    container_name: peer0.org1.permit.com
+    image: hyperledger/fabric-peer:2.5.0
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric-network_permit
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer0.org1.permit.com
+      - CORE_PEER_ADDRESS=peer0.org1.permit.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.permit.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.permit.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.permit.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - peer0.org1.permit.com:/var/hyperledger/production
+      - ./organizations/peerOrganizations/org1.permit.com/peers/peer0.org1.permit.com/msp:/etc/hyperledger/fabric/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 7051:7051
+    networks:
+      - permit
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:2.5.0
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.org1.permit.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.permit.com/users/Admin@org1.permit.com/msp
+      - CORE_CHAINCODE_KEEPALIVE=10
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ./organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+      - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts/
+    networks:
+      - permit 

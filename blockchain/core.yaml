@@ -1,0 +1,49 @@
+# core.yaml for Hyperledger Fabric v2.5
+
+# Peer node configuration
+peer:
+  id: jdoe
+  networkId: dev
+  listenAddress: 0.0.0.0:7051
+  address: 0.0.0.0:7051
+  chaincodeListenAddress: 0.0.0.0:7052
+  chaincodeAddress: 0.0.0.0:7052
+  gomaxprocs: -1
+  tls:
+    enabled: true
+    cert:
+      file: tls/server.crt
+    key:
+      file: tls/server.key
+    rootcert:
+      file: tls/ca.crt
+  fileSystemPath: /var/hyperledger/production
+  BCCSP:
+    Default: SW
+    SW:
+      Hash: SHA2
+      Security: 256
+      FileKeyStore:
+        KeyStore: /var/hyperledger/production/msp/keystore
+  externalBuilders: []
+
+# Orderer node configuration
+orderer:
+  General:
+    ListenAddress: 0.0.0.0
+    ListenPort: 7050
+    TLS:
+      Enabled: true
+      PrivateKey: tls/server.key
+      Certificate: tls/server.crt
+      RootCAs:
+        - tls/ca.crt
+    BCCSP:
+      Default: SW
+      SW:
+        Hash: SHA2
+        Security: 256
+        FileKeyStore:
+          KeyStore: /var/hyperledger/production/msp/keystore
+  FileLedger:
+    Location: /var/hyperledger/production/orderer 

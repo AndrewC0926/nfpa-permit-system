@@ -1,0 +1,91 @@
+name: Verify
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          npm install
+          
+      - name: Run verification tests
+        run: make verify
+        env:
+          API_URL: http://localhost:3000
+          
+      - name: Upload test logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-logs
+          path: logs/
+          retention-days: 7
+          
+      - name: Comment PR with test results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Read the latest test summary
+            const logDir = 'logs';
+            const files = fs.readdirSync(logDir)
+              .filter(f => f.endsWith('.json'))
+              .sort()
+              .reverse();
+              
+            if (files.length === 0) {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: '❌ No test logs found'
+              });
+              return;
+            }
+            
+            const latestLog = JSON.parse(fs.readFileSync(path.join(logDir, files[0])));
+            
+            // Format test results
+            const status = latestLog.result === 'PASS' ? '✅' : '❌';
+            const duration = latestLog.steps[latestLog.steps.length - 1].timestamp - latestLog.timestamp;
+            
+            const body = `
+            ## Test Results
+            ${status} **${latestLog.testType}** (${duration}s)
+            
+            ### Details
+            - **Permit ID:** ${latestLog.testData.permitId}
+            - **Transaction IDs:** ${latestLog.testData.transactionIds.join(', ')}
+            - **Peer Used:** ${latestLog.testData.peerUsed}
+            
+            ### Steps
+            ${latestLog.steps.map(step => `- ${step.status === 'SUCCESS' ? '✅' : '❌'} ${step.step}`).join('\n')}
+            
+            [View full logs](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            }); 

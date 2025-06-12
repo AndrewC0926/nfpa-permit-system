@@ -1,0 +1,378 @@
+name: CI/CD Rootless Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for gitleaks
+          
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+          
+      - name: Run Snyk Monitor
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --all-projects
+          
+      - name: Run OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'NFPA Permit System'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+          
+      - name: Run CodeQL Analysis
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+          
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'backend:latest'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          
+      - name: Run Gitleaks
+        uses: zricethezav/gitleaks-action@master
+        with:
+          config-path: .gitleaks.toml
+          
+      - name: Run SonarQube Analysis
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          
+      - name: Run Bandit security linter
+        uses: PyCQA/bandit@master
+        with:
+          targets: backend/src
+          format: json
+          output: bandit-results.json
+          
+      - name: Run npm audit
+        run: |
+          cd backend && npm audit --production
+          cd ../frontend && npm audit --production
+
+  backend:
+    needs: security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+          
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm ci
+          
+      - name: Run ESLint
+        run: |
+          cd backend
+          npm run lint
+          
+      - name: Run TypeScript type checking
+        run: |
+          cd backend
+          npm run type-check
+          
+      - name: Run backend tests
+        run: |
+          cd backend
+          npm run test
+          
+      - name: Run blockchain integration tests
+        run: |
+          cd backend
+          npm run test:blockchain
+        env:
+          HLF_NETWORK_CONFIG: ${{ secrets.HLF_NETWORK_CONFIG }}
+          HLF_CHANNEL_NAME: ${{ secrets.HLF_CHANNEL_NAME }}
+          HLF_CHAINCODE_NAME: ${{ secrets.HLF_CHAINCODE_NAME }}
+          
+      - name: Build backend
+        run: |
+          cd backend
+          npm run build
+          
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-coverage
+          path: backend/coverage/
+          
+      - name: Health check
+        run: |
+          cd backend
+          npm run build && npm run test
+
+  frontend:
+    needs: security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+          
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+          
+      - name: Run ESLint
+        run: |
+          cd frontend
+          npm run lint
+          
+      - name: Run TypeScript type checking
+        run: |
+          cd frontend
+          npm run type-check
+          
+      - name: Run frontend tests
+        run: |
+          cd frontend
+          npm run test
+          
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+          
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/
+          
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-build
+          path: frontend/build/
+
+  integration:
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download frontend build
+        uses: actions/download-artifact@v3
+        with:
+          name: frontend-build
+          path: frontend/build
+          
+      - name: Run integration tests
+        run: |
+          cd backend
+          npm run test:integration
+          
+      - name: Run end-to-end tests
+        run: |
+          cd frontend
+          npm run test:e2e
+
+  monitoring:
+    needs: [integration]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Prometheus
+        uses: prometheus/setup-prometheus@v1
+        with:
+          prometheus-version: v2.45.0
+          
+      - name: Set up OpenTelemetry
+        uses: open-telemetry/setup-opentelemetry@v1
+        with:
+          otel-version: v1.21.0
+          
+      - name: Configure monitoring
+        run: |
+          # Configure Prometheus targets
+          echo "  - job_name: 'backend'
+              static_configs:
+                - targets: ['localhost:3000']" >> prometheus.yml
+              
+          # Configure OpenTelemetry
+          echo "exporters:
+            prometheus:
+              endpoint: localhost:9090
+            jaeger:
+              endpoint: localhost:14250" > otel-config.yaml
+          
+      - name: Start monitoring stack
+        run: |
+          docker-compose -f docker-compose.monitoring.yml up -d
+          
+      - name: Verify monitoring
+        run: |
+          curl -f http://localhost:9090/-/healthy || exit 1
+          curl -f http://localhost:14250/api/services || exit 1
+
+  backup:
+    needs: [monitoring]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
+      - name: Backup MongoDB
+        run: |
+          mongodump --uri="${{ secrets.MONGODB_URI }}" --out=backup/mongodb
+          tar -czf mongodb-backup.tar.gz backup/mongodb
+          aws s3 cp mongodb-backup.tar.gz s3://${{ secrets.BACKUP_BUCKET }}/mongodb/$(date +%Y-%m-%d).tar.gz
+          
+      - name: Backup Fabric Ledger
+        run: |
+          cd backend
+          npm run backup:ledger
+          aws s3 cp ledger-backup.tar.gz s3://${{ secrets.BACKUP_BUCKET }}/ledger/$(date +%Y-%m-%d).tar.gz
+          
+      - name: Backup Frontend Builds
+        run: |
+          aws s3 sync s3://${{ secrets.S3_BUCKET }} s3://${{ secrets.BACKUP_BUCKET }}/frontend/$(date +%Y-%m-%d) --delete
+          
+      - name: Cleanup old backups
+        run: |
+          # Keep last 30 days of backups
+          aws s3 ls s3://${{ secrets.BACKUP_BUCKET }}/mongodb/ | sort -r | tail -n +31 | awk '{print $4}' | xargs -I {} aws s3 rm s3://${{ secrets.BACKUP_BUCKET }}/mongodb/{}
+          aws s3 ls s3://${{ secrets.BACKUP_BUCKET }}/ledger/ | sort -r | tail -n +31 | awk '{print $4}' | xargs -I {} aws s3 rm s3://${{ secrets.BACKUP_BUCKET }}/ledger/{}
+          aws s3 ls s3://${{ secrets.BACKUP_BUCKET }}/frontend/ | sort -r | tail -n +31 | awk '{print $4}' | xargs -I {} aws s3 rm s3://${{ secrets.BACKUP_BUCKET }}/frontend/{}
+
+  deploy:
+    needs: [backup]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+          
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        
+      - name: Build and push backend container
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: nfpa-permit-backend
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd backend
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          
+      - name: Deploy backend to ECS
+        run: |
+          aws ecs update-service --cluster nfpa-permit-cluster \
+            --service backend-service \
+            --force-new-deployment
+            
+      - name: Deploy frontend to S3
+        run: |
+          aws s3 sync frontend/build/ s3://${{ secrets.S3_BUCKET }} \
+            --delete \
+            --cache-control "max-age=31536000,public"
+            
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+            
+      - name: Verify deployment
+        run: |
+          # Wait for ECS service to stabilize
+          aws ecs wait services-stable \
+            --cluster nfpa-permit-cluster \
+            --services backend-service
+            
+          # Run health checks
+          curl -f https://api.${{ secrets.DOMAIN }}/health || exit 1
+          curl -f https://${{ secrets.DOMAIN }}/ || exit 1
+          
+      - name: Notify on success
+        if: success()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: deployments
+          SLACK_COLOR: good
+          SLACK_TITLE: Deployment Successful
+          SLACK_MESSAGE: 'Successfully deployed to production :rocket:'
+          
+      - name: Notify on failure
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: deployments
+          SLACK_COLOR: danger
+          SLACK_TITLE: Deployment Failed
+          SLACK_MESSAGE: 'Deployment failed :x:'
+          
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          # Rollback ECS service to previous version
+          aws ecs update-service --cluster nfpa-permit-cluster \
+            --service backend-service \
+            --task-definition $(aws ecs describe-task-definition --task-definition nfpa-permit-backend --query 'taskDefinition.taskDefinitionArn' --output text)
+            
+          # Restore previous frontend version from S3
+          aws s3 sync s3://${{ secrets.S3_BUCKET }}/backup/ s3://${{ secrets.S3_BUCKET }} \
+            --delete 

@@ -1,0 +1,12 @@
+PeerOrgs:
+  - Name: City
+    Domain: city.permit.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+        - 127.0.0.1
+        - peer0.city.permit.com
+    Users:
+      Count: 1 

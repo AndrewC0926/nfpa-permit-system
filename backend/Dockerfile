@@ -1,30 +1,29 @@
+# Use official Node.js LTS image
 FROM node:18-alpine
 
+# Create app directory and set permissions
 WORKDIR /app
+
+# Create a non-root user with UID 1000
+RUN addgroup -g 1000 appgroup && adduser -u 1000 -G appgroup -S appuser
 
 # Copy package files
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install --production
 
-# Copy source code
+# Copy app source
 COPY . .
 
-# Create logs directory
-RUN mkdir -p logs
+# Set correct permissions
+RUN chown -R 1000:1000 /app
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nfpa -u 1001
+# Switch to non-root user
+USER 1000:1000
 
-# Change ownership
-RUN chown -R nfpa:nodejs /app
-USER nfpa
+# Expose port
+EXPOSE 3000
 
-EXPOSE 3001
-
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1
-
-CMD ["npm", "start"]
+# Start the app
+CMD ["npm", "start"] 

@@ -1,162 +1,186 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Typography, Card, CardContent, Grid, Box, Paper, LinearProgress
+  Box,
+  Container,
+  Grid,
+  Paper,
+  Typography,
+  CircularProgress,
+  Card,
+  CardContent,
 } from '@mui/material';
 import {
-  Description, HourglassEmpty, CheckCircle, Cancel, Schedule, AttachMoney
-} from '@mui/icons-material';
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts';
+import { permitApi, DashboardStats } from '../services/api';
 
-interface DashboardProps {
-  permits: any[];
-}
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-const Dashboard: React.FC<DashboardProps> = ({ permits }) => {
-  const stats = {
-    totalPermits: 156,
-    pendingReview: 23,
-    approved: 98,
-    rejected: 12,
-    inspectionsDue: 18,
-    revenue: 45000,
-    aiProcessingTime: 2.3,
-    complianceRate: 94
-  };
+const Dashboard: React.FC = () => {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const data = await permitApi.getDashboardStats();
+        setStats(data);
+      } catch (err) {
+        setError('Failed to load dashboard data');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
+  }
+
+  if (!stats) {
+    return null;
+  }
+
+  const statusData = [
+    { name: 'Pending Review', value: stats.pendingReview },
+    { name: 'Approved', value: stats.approved },
+    { name: 'Rejected', value: stats.rejected },
+  ];
 
   return (
-    <Box>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" gutterBottom>
-        🏛️ AI-Powered Permit Review Dashboard
-      </Typography>
-      <Typography variant="body1" color="textSecondary" gutterBottom>
-        Real-time analytics for automated NFPA compliance review system
+        Permit System Dashboard
       </Typography>
 
-      <Grid container spacing={3} mb={3}>
-        <Grid item xs={12} sm={6} md={2}>
+      <Grid container spacing={3}>
+        {/* Statistics Cards */}
+        <Grid item xs={12} md={3}>
           <Card>
             <CardContent>
-              <Box display="flex" alignItems="center">
-                <Description sx={{ fontSize: 40, color: 'primary.main', mr: 2 }} />
-                <Box>
-                  <Typography variant="h4">{stats.totalPermits}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Total Permits
-                  </Typography>
-                </Box>
-              </Box>
+              <Typography color="textSecondary" gutterBottom>
+                Total Permits
+              </Typography>
+              <Typography variant="h4">{stats.totalPermits}</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Pending Review
+              </Typography>
+              <Typography variant="h4" color="warning.main">
+                {stats.pendingReview}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Compliance Rate
+              </Typography>
+              <Typography variant="h4" color="success.main">
+                {(stats.complianceRate * 100).toFixed(1)}%
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Avg. Processing Time
+              </Typography>
+              <Typography variant="h4">
+                {stats.averageProcessingTime.toFixed(1)} days
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={2}>
-          <Card>
-            <CardContent>
-              <Box display="flex" alignItems="center">
-                <HourglassEmpty sx={{ fontSize: 40, color: 'warning.main', mr: 2 }} />
-                <Box>
-                  <Typography variant="h4">{stats.pendingReview}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    AI Processing
-                  </Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
+        {/* Charts */}
+        <Grid item xs={12} md={8}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 400 }}>
+            <Typography variant="h6" gutterBottom>
+              Permit Status Distribution
+            </Typography>
+            <ResponsiveContainer>
+              <BarChart
+                data={statusData}
+                margin={{
+                  top: 20,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value" fill="#1a4480" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Paper>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={2}>
-          <Card>
-            <CardContent>
-              <Box display="flex" alignItems="center">
-                <CheckCircle sx={{ fontSize: 40, color: 'success.main', mr: 2 }} />
-                <Box>
-                  <Typography variant="h4">{stats.approved}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Auto-Approved
-                  </Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={2}>
-          <Card>
-            <CardContent>
-              <Box display="flex" alignItems="center">
-                <Cancel sx={{ fontSize: 40, color: 'error.main', mr: 2 }} />
-                <Box>
-                  <Typography variant="h4">{stats.rejected}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Flagged for Review
-                  </Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={2}>
-          <Card>
-            <CardContent>
-              <Box display="flex" alignItems="center">
-                <Schedule sx={{ fontSize: 40, color: 'info.main', mr: 2 }} />
-                <Box>
-                  <Typography variant="h4">{stats.aiProcessingTime}s</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Avg AI Review Time
-                  </Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={2}>
-          <Card>
-            <CardContent>
-              <Box display="flex" alignItems="center">
-                <AttachMoney sx={{ fontSize: 40, color: 'success.main', mr: 2 }} />
-                <Box>
-                  <Typography variant="h4">${stats.revenue / 1000}K</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Revenue (YTD)
-                  </Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
+        <Grid item xs={12} md={4}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 400 }}>
+            <Typography variant="h6" gutterBottom>
+              Status Distribution
+            </Typography>
+            <ResponsiveContainer>
+              <PieChart>
+                <Pie
+                  data={statusData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  outerRadius={120}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
+                  {statusData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </Paper>
         </Grid>
       </Grid>
-
-      <Paper sx={{ p: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          🤖 AI Performance Metrics
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={3}>
-            <Typography variant="body2">Processing Speed</Typography>
-            <LinearProgress variant="determinate" value={95} sx={{ mt: 1 }} />
-            <Typography variant="caption">95% faster than manual</Typography>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <Typography variant="body2">Accuracy Rate</Typography>
-            <LinearProgress variant="determinate" value={94} color="success" sx={{ mt: 1 }} />
-            <Typography variant="caption">94% detection accuracy</Typography>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <Typography variant="body2">Cost Reduction</Typography>
-            <LinearProgress variant="determinate" value={78} color="warning" sx={{ mt: 1 }} />
-            <Typography variant="caption">78% cost savings</Typography>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <Typography variant="body2">Time Savings</Typography>
-            <LinearProgress variant="determinate" value={85} color="info" sx={{ mt: 1 }} />
-            <Typography variant="caption">85% time reduction</Typography>
-          </Grid>
-        </Grid>
-      </Paper>
-    </Box>
+    </Container>
   );
 };
 

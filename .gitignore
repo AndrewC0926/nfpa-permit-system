@@ -73,3 +73,9 @@ grafana_data/
 
 # Kubernetes secrets
 k8s/secrets/
+
+# Fabric/Blockchain
+msp/
+keystore/
+blockchain/organizations/
+blockchain/channel-artifacts/

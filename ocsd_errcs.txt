@@ -1,0 +1,1274 @@
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+Subject: BDA ‐ Implementation Guidelines & Support
+
+6‐19‐2024
+Rev 7‐16‐2024
+
+The Orange County Sheriff’s Department, Technology Division is responsible for the operation and
+maintenance of the Countywide Coordinated Communications System (CCCS) 800MHz Simulcast P‐25
+trunked radio system. As the license custodian, the department issues authorization for all radio
+transmitters communicating through this system in accordance with FCC regulation CFR 47 Part 90. This
+includes all In‐Building Emergency Responder Radio Communications Systems (e.g. ERRCS, ERCES or BDA
+systems).
+As required by NFPA, CFC, County of Orange, and local City ordinances the owner of any building within
+the county is responsible for the installation and maintenance of an ERRCS system if radio coverage
+within their building is inadequate to support reliable two‐way radio communications via the CCCS or
+any other dedicated Public Safety radio system(s) serving the building in question.
+The intent of this document is to assist the building owner and their contracted system installation team
+in securing approval for construction, verification of operation and ultimately approval for continuing
+operation of the required ERRCS.
+It is the responsibility of the contractor to execute all steps in proper order and secure all permissions
+and permits PRIOR TO construction or activation. Failure to do so may result in delays, penalties or denial
+of approval to operate a given system.
+The system shall not be left in a powered‐on state, with donor antenna connected, except for testing
+during regular business hours, until final inspection has been completed and final approval has been
+issued by OCSD/COMM.
+
+This document is effective 1 July 2024 for all initial submittals or projects received on or after that
+date.
+ALL email correspondence regarding ERRCS matters should be directed to ERRCS@ocsheriff.gov.
+Correspondences to other addresses may not be reviewed or responded to.
+
+Page 1 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+Table of Contents
+Contents.......................................................................................................................................................3
+Conventions .................................................................................................................................................4
+Application and Approval Process .............................................................................................................5
+Appendix A ‐ BDA System Design Requirements ......................................................................................9
+Appendix B ‐ Minimum Submittal Requirements ...................................................................................15
+
+Appendix C ‐ System Installation Requirements .....................................................................................21
+
+Appendix D ‐ 900 MHz Paging System Alarm Reporting .........................................................................27
+
+Appendix E - Commissioning and Annual Testing Report Requirements ...............................................29
+
+Appendix F ‐ Approval to Operate Sample...............................................................................................37
+
+Appendix G ‐ Typical Project Process Flow ..............................................................................................39
+
+Page 3 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+Conventions used in this document:
+AHJ
+ALC
+Band 14
+BBU
+BDA
+CCCS
+CFC
+CLASS “A”
+CLASS ”B”
+DAQ
+DAS
+DL
+DONOR
+ANTENNA
+DONOR SITE
+ERCES
+ERRCS
+ESMR
+FACP
+FBER
+FCC
+GROL
+IBWAVE
+LOS
+LBR
+NICET
+NFPA
+OCFA
+OCSD
+OCSD/COMM
+PDF
+POTS
+RANPLAN
+
+SINR
+TPC
+TPT
+TSU
+UL
+UPS
+
+Agency Having Jurisdiction
+Automatic Level Control
+Specific frequencies in the 700MHz range dedicated to First Net operation
+Battery Back‐Up Unit
+Bi‐Directional Amplifier
+Orange County 800 MHz Countywide Coordinated Communications System
+California Fire Code
+A signal booster designed to retransmit channelized signals within a narrow (<75KHz)
+frequency band
+A signal booster designed to retransmit any signals within a wide frequency band
+Delivered Audio Quality “A measure of audio quality over a transmission medium”
+Distributed Antenna System ‐ Distributed antennas within the facility fed by the BDA
+Down Link – signal from hilltop repeater/base station to portable
+Primary antenna providing the R.F. link between the BDA and the Local Cell signal
+Assigned repeater site providing down‐link signal to be amplified throughout the subject
+building
+Emergency Responder Communications Enhancement System
+Emergency Responder Radio Communications System
+Frequencies in the 816‐824MHz and 861‐869MHz now allocated to Common Carrier use
+Fire Alarm Control Panel
+Frame Bit Error Rate
+Federal Communications Commission
+FCC General Radio Operator License
+Telecom radio system planning software
+Line of Sight
+Link Budget Report
+National Institute for Certification in Engineering Technologies
+National Fire Prevention Association
+Orange County Fire Authority
+Orange County Sheriff’s Department
+Orange County Sheriff’s Department – Technology Division
+Portable Document Format
+Plain Old Telephone Service
+Network planning and optimization software
+Signal to Interference Plus Noise reference value
+Third Party Contractor
+Third Party Test
+Technical Services Unit – OCSD, Technology Division
+Uplink – Signal from portable to repeater
+Uninterruptable Power Supply
+Page 4 of 40
+
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+Application and Approval Process
+1) For initial submittal, OCSD/COMM requires the ERRCS/BDA/DAS system designer to provide the
+following for pre‐evaluation and issuance of Cell‐Site assignment for each individual project:
+a. Project Name.
+b. Site address.
+c. Project description, size of building, number of floors above and below grade, proposed
+ERRCS design description.
+d. Contractor contact information including name, address, phone and email address for
+both designer and installation provider.
+e. Proposed BDA Model (S/N if available).
+f. Proposed mode of operation (Class A or Channelized Class B).
+g. Proposed project timeline.
+This information is to be submitted via email to errcs@ocsheriff.gov.
+2) OCSD/COMM will respond with a Project Initiation form containing:
+a. A case number to be used in all correspondence regarding the project.
+b. A list of required frequencies to be supported and donor site(s) to be used.
+c. Instructions and credentials to be used for transferring plans and associated documents
+directly to a dedicated portal established for the project.
+3) Designer will then complete the design and submit plan set in digital format to the assigned
+portal for approval.
+a. See APPENDIX A for minimum design requirements.
+b. See APPENDIX B for submittal format requirements.
+c. NOTE: Local ordinance will determine whether contractor is to submit to local
+jurisdiction or OCSD/COMM at this point.
+d. Submittal must be compliant with the local Fire Jurisdiction and planning department’s
+requirements and at minimum shall be based on Architectural size D (36” x 24”) building
+prints (in PDF) and must include:
+I.
+Site Address
+II.
+Building number assigned to project (if available)
+III.
+Description of building (number of floors above/below grade, type of construction)
+IV. Proposed location of all powered system equipment within structure
+V. BDA type, model#, (SN# if available)
+VI. BDA FCC ID# (Type Acceptancy Approval for the device)
+VII.
+Customer contact (name, tel., address)
+VIII.
+Contractor contact (name, tel., address)
+IX.
+Proposed operational configuration (Class A or Channelized Class B)
+Page 5 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+X.
+XI.
+
+XII.
+XIII.
+XIV.
+XV.
+XVI.
+
+Full materials list
+Schematic (Riser) drawing of system including
+a. Up and down link power projections at all junctions
+b. All building floors/levels including those without system components
+Floor plans for all floors (including those without BDA components)
+Exterior elevations for all exposures
+Proposed heat maps (typ. IBWAVE or RANPLAN) for all floors
+Manufacturer’s data sheets for all components except small hardware
+Proposed project completion date
+
+4) OCSD/COMM will review design to determine acceptability for operation within the CCCS and
+any requirements for modification or correction. Once accepted a letter of approval will be
+provided by OCSD/COMMS. Construction may not commence until receipt of approval.
+Additional permits may be required by the AHJ for each project.
+5) Submit as hard copy (per local planning department requirements) the appropriate number of
+plan sets for stamping, if required. This step may have been required in item 3 by local
+ordinance.
+a. Deliver and retrieve plan sets at our Service Desk
+OCSD Technology Center
+1382 Bell Ave.
+Tustin, CA 92780
+6) On completion of construction, the contractor is to request via e‐mail to OCSD/COMM for a
+unique Site ID and FCC Registration Number. This submittal shall contain the following as‐built
+details:
+a. Project Name, Site Address and case number.
+b. BDA location within building (Floor & Room #).
+c. BDA type, model# and Serial Number(s) of all active components.
+d. On‐site customer contact available 24/7 to provide access to all equipment (building
+owner/manager, name, telephone number, address, email).
+e. Installation Contractor contact (name, telephone number, address, email).
+f. Actual operational configuration (Class A or B) including number of filters and
+bandwidth(s) used in 700/800MHz.
+g. Phone number of line used for auto dialer.
+h. Digital images of system installation showing:
+i. Amplifier(s) (all)
+ii. Power Supply
+iii. AC Service Disconnect(s)
+iv. Auto Dialer
+Page 6 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+v. Donor Antenna(s) showing LOS path to Donor Site(s)
+vi. Required labeling (image must be readable)
+i. Final As‐Built documents.
+i. Full plan and materials submittals with any changes or variances noted.
+NOTE: Items a‐g are to be listed on a single page, or as email content. The images required in
+item h are not to be used to provide the required information, only as visual verification.
+(Note: please allow a minimum of 3‐5 working days for grant of Site ID and FCC Registration Number.)
+7) On acceptance of the submittal in item 6, OCSD/COMM will issue the ORANGE COUNTY SITE ID
+and FCC Site Registration Number. The BDA auto dialer will be programmed by the contractor or
+third‐party technician with the assigned ORANGE COUNTY SITE ID to call the County paging
+system and demonstrate operation with OCSD Communications staff. No Approval to Operate
+will be granted without successful completion of this test.
+a. NOTE: New systems shall not be enabled without prior coordination with OCSD/COMM
+System Watch (714) 628‐7020. NO EXCEPTIONS!
+b. See APPENDIX D for details on proper configuration and testing of the auto‐dialer.
+8) For final approval a third‐party evaluation and report must be submitted to OCSD/COMM and
+the Fire Agency having jurisdiction.
+a. Test and report requirements are described in APPENDIX E
+b. Test date is to be coordinated in advance with both the Fire Agency having jurisdiction
+and OCSD/COMM, NO EXCEPTIONS.
+c. The Third Party Test is to be performed by an FCC licensed General Radio Telephone
+Operator (GROL) who is qualified and certified to inspect BDA installations to ensure
+compliance with operational specifications as called out in CFR 47, Part 90 §90.219. Proof
+of FCC license and ERRCS training must be included with the report.
+1. At present, OCSD/COMM does not perform the third party testing.
+2. Submit in PDF form the third party test report to OCSD/COMM for review.
+d. In order to assure that the portable devices used to perform DAQ (voice quality) testing
+most closely match the performance of units used by agencies operating on the OC CCCS
+OCSD Technology Division provides test kits consisting of two Motorola portable radios
+for loan to testing agencies on a 48 hour basis. These units can be secured by contacting
+our Service Desk (714 704‐7999) and requesting the “BDA test radio Kit” for loan.
+1. It is not currently the County’s policy to allow non‐Public Safety entities to
+provide their own radios for programming on this system.
+9) On review and acceptance of the Third Party Test Report and As‐Built documents OCSD/COMM
+will provide written confirmation and approval to operate the ERRCS system. This approval is
+valid for one year from grant date and must be renewed by receipt of a compliant annual review
+from a qualified Third‐Party testing agent.
+10) Make and store copies on site as shown in Appendix C Section 11.
+Please contact this office if you have any questions.
+Page 7 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+APPENDIX A
+BDA System Design Requirements:
+1) Refer to APPENDIX B for detailed submittal requirements.
+2) Contractor is fully responsible for the 700/800MHz BDA system design and compliance
+with the requirements set forth in CFC 510 and CFR 47, FCC Part 90, §90.219 and this
+document.
+3) BDA coverage shall be based on operation with fire door(s) closed.
+4) BDA system shall be fully capable of frequency modification and programming without
+requiring removal from property.
+5) Shall be capable of supporting both analog and digital modulation.
+6) Class B devices must support Channelization capable of encompassing all assigned
+frequencies.
+a. Each filter must be capable of independent gain adjustment and uplink squelch
+operation.
+b. Each filter must exhibit channel delays less than 20us.
+c. Filters shall not exceed 150kHz bandwidth without written approval.
+d. Filter bandwidth of 75KHz is considered optimal.
+7) Operational Frequencies:
+a. Must be operational on both 700MHz and 800MHz Public Safety bands.
+b. Operate on all assigned CCCS 800MHz and 700MHz frequencies and sites assigned
+during initial submittal.
+c. Frequencies not specifically assigned by OCSD are not to be passed by system without
+approval from the appropriate licensee in addition to OCSD approval for operation on
+OC frequencies.
+d. Intentional retransmission of any frequencies other than those assigned by
+OCSD/COMMS must have approval from the license custodian of those frequencies.
+
+Page 9 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+8) System Gain and Transmitted Power
+a. System shall be designed to minimize amplifier downlink gain required to achieve
+required signal strength in all areas.
+i. Service antenna placement and downlink gains shall be designed to prevent RF
+leakage and to avoid downlink levels exceeding ‐75dBm at or near the building
+interior perimeter
+ii. Service (DAS) antennas shall be located to minimize the range of uplink
+power presented to the DAS antenna input of any amplifier, which should
+vary by not more than 20dB (minimum to maximum projected signal from
+portable devices operating within the structure(s)) and arrive at the amplifier
+fully within the device’s functional AGC range.
+iii. RF Leakage from the system shall not present a measured level in excess of 15dB
+below the measured Donor signal from any assigned Cell at ground level in the
+immediate area (3‐25’) from the building perimeter.
+b. Uplink gain is not to exceed 65dB without prior approval.
+c. Uplink transmissions are not to exceed 27dBm at donor port of amplifier and not to
+exceed 37dBm ERP without prior approval from OCSD COMMS.
+d. Uplink transmissions are to reach the assigned Donor site(s) at per‐channel levels not
+less than ‐95dBm and not greater than ‐75dBm.
+e. Design is to assume a portable transmit level of 34dBm.
+9) Uplink Muting shall be utilized with the Mute threshold set between ‐75dBm and ‐85dBm.
+The system shall be designed to provide reliable operation presenting uplink signal from
+any interior location to the amplifier input at not less than ‐80dBm.
+10) BDA system shall be new product and supported by manufacturer for seven years after
+installation.
+11) BDA system shall be equipped with Battery backup (preferred) or Uninterruptable Power
+Supply (UPS) system providing not less than 24 hour operation of amplifier and all peripheral
+devices at full power.
+12) Alarms and Error Reporting
+a. The BDA alarm outputs shall be connected to the facility FACP as required by current
+Fire Code(s).
+
+Page 10 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+i. If FACP is not located in view of master amplifier, a local status display must
+be provided showing all monitored alarm conditions. This may be integrated
+to the amplifier, Battery Backup Unit, or external device.
+b. Amplifier and BBU alarms shall be interconnected so that all alarms are delivered to
+both units and any external devices.
+i. All BDA alarms shall be transferred to BBU for display and logging if BBU is so
+equipped.
+ii. All BBU alarms shall be delivered to Master Amplifier for the purpose of alarm
+logging and status display allowing user connected to remote management port
+on amplifier to view both BDA and BBU alarms.
+c. BDA system shall be equipped with auto‐dialer system driven by the system alarm
+outputs. The BDA auto dialer shall be programmed to report the assigned SITE ID to the
+County 900MHz paging system via dedicated telephone line (POTS) or cellular auto
+dialer. In the event of loss of commercial power, the Auto dialer will be supported by
+battery backup, providing a minimum of 24 hours of operation.
+i. The Auto‐dialer back up battery shall be fitted with a properly sized,
+intelligent battery charger which will automatically recharge the Auto‐dialer
+backup battery upon restoration of power. The Auto‐Dialer may be powered
+by the master amplifier’s BBU provided sufficient run‐time can be provided.
+ii. The system shall be capable of providing SNMP based alarms to specified
+servers.
+d. NOTE: It is the County’s intent to discontinue use of the auto dialer driven paging
+system within the next 5 years. Details regarding replacement of existing systems
+and implementation of alternative status reporting will be provided in future
+releases. To this end, all new installations must be capable of supporting SNMP
+based alerting and remote operation via IP connectivity.
+13) Programming and Error Log Access
+a. The system shall support programming (local and remote) via Ethernet connection for the
+purpose of programming and error log review (universal browser based interface
+preferred).
+
+14) Donor antenna(s) to be minimum 13dBd (15dBi) gain directional, have 30dB front to back ratio,
+designed to operate through the 700 and 800MHz bands and must be one of the following
+designs:
+a. Exterior rated enclosed panel (preferred).
+b. Welded construction Yagi with anodized finish (with written approval).
+Page 11 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+c. Corner reflector with anodized finish (with written approval).
+15) Indoor antennas shall be at the minimum 700 / 800 MHz compliant.
+a. Indoor multi‐band antennas for BDA/DAS and cell phone coverage may be approved
+based on the building owner requirement and overall system design.
+16) BDA system design shall not utilize reactive “Tee” type connectors exhibiting less than 20dB
+isolation between ports for power division. Inductive couplers or isolated splitters are
+required.
+17) Power dividers must be rated for maximum possible system power.
+18) All antennas shall be assigned unique alpha‐numeric identifiers which shall be shown in all
+line drawings, documentation and floor plans.
+19) All antenna feed line segments, fiber optic cables and signal jumpers in excess of 6’ shall be
+assigned unique alpha‐numeric identifiers which shall be shown in line drawings, documents
+and floor plans.
+20) Systems shall be capable of supporting the maximum number of 700 / 800 MHz frequency
+pairs as assigned to the project by the FCC licensee(s). The Loma Ridge site, for example,
+comprises three trunked systems with a total of 53 channels. The composite power of 53
+carriers is approximately 17dB higher than a single carrier.
+21) The BDA system shall include anti‐oscillation circuitry and be designed with adequate
+isolation to preclude BDA oscillations that impair / degrade the donor public safety 700 /
+800 MHz systems.
+22) The BDA system shall include ALC circuitry on the uplink, as a minimum, to ensure that
+intermodulation and other spurious products are not generated and transmitted to the
+donor site.
+23) The BDA system shall be designed and tested to ensure that noise and spurious emissions
+do not degrade the performance of the donor site or any other FCC licensed system.
+
+Page 12 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+24) The transmitted noise and spurious interference, measured within a 10 kHz bandwidth at
+the donor antenna shall not exceed ‐43dBm and in no case shall result in a calculated noise
+level at the donor site greater than ‐150dBm.
+
+25) The constructing contractor is to be responsible for addition of any additional filtering or
+devices required to prevent interference to unrelated systems or frequencies not approved
+for retransmission under the Approval to Operate document provided on completion of
+construction and testing.
+
+Page 13 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+APPENDIX B
+Minimum Submittal Requirements
+The Orange County Sheriff’s Department, Communications and Technology Division is responsible for
+the operation and maintenance of the Countywide Coordinated Communications System (CCCS)
+800MHz Simulcast P‐25 trunked radio system. As the license custodian, the department is responsible
+to issue authorization for all radio transmitters not requiring individual FCC licensing for operation within
+this system. This includes all In‐Building Emergency Responder Radio Communications Systems (ERRCS)
+(BDA systems).
+As required by NFPA, CFC and Orange County ordinances the owner of any building within the county is
+responsible to install an ERRCS system if radio coverage within their building is inadequate to support
+normal two‐way radio communications through the CCCS.
+It is the intent of this document to assist the building owner or their contracted system installation team
+in securing approval for construction, verification of operation and ultimately approval for continuing
+operation of the required In‐Building (ERRCS) system.
+Prior to construction of an in‐building radio amplifier System (ERRCS), the Orange County Sherriff’s
+Department, Communications Division as the license custodian for the 800MHz radio system (CCCS)
+must review and approve the design prior to the commencement of installation.
+The use of a standardized format and content in all submittals will greatly reduce the potential for delays
+caused by repeated resubmittals required to assure complete and accurate documentation. To that end,
+the following minimum requirements for standardized submittals have been established.
+1. All submittals for OCSD review shall be submitted in PDF form.
+a. Preferred format is a single document containing all required content.
+b. As an alternative, the submittal may consist of two files, one containing the BOM and
+all Material data sheets and the second containing all other content.
+2. Filenames shall contain the project name and date of filing, revision number may also be
+included in file name.
+3. If submitted as separate Plans and Materials Files, the file name must indicate the content.
+a. If submitted as separate files, both files must contain matching materials lists.
+4. Every effort to maintain the file size below 100MB is to be made, including using multiple
+files for plan sets relating to multiple buildings.
+5. File Resolution must provide clear images and text at Zoom levels to at least 250%.
+Page 15 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+6. Supporting source files (Excel, Word, ibwave, Etc) may be submitted to assist in review but
+all content must be represented in the one or two pdf files described in para 1 a & b above.
+
+Page 16 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+DESIGN SUBMITTAL
+Construction of ERRCS systems require the contractor to obtain building permits from the local authority.
+Approval of the design by OCSD is often required as a precursor to grant of such construction permits.
+Official Submittals are processed through the appropriate Building Permits Department for the city or
+county region in which the construction will take place. Multiple paper copies in the quantity required
+by the local authority and a digital copy for OCSD records will be submitted. These will either be
+forwarded to OCSD Communications by the City or by the contractor depending upon the locality
+involved.
+System Design and As‐built submittals shall be formatted as described below and include the following
+data:
+1. Format – Construction (Engineering) print:
+a. Size – As required by local jurisdiction
+b. Minimum Architectural D (36” x 24”)
+c. All pages of digital copy must be of the same dimension.
+d. Material data sheets may be submitted as a separate document in booklet format, 8.5” x 11.5”
+with cover sheet and full materials list included.
+2. Cover page showing:
+a. Project Name and Address
+b. Building description including:
+i. Usage
+ii. Construction type
+iii. Number of floors above and below grade
+iv. Proposed Square footage
+c. Property Owner Contact Information
+d. Contractor’s Contact information
+e. Vicinity map showing property location
+f. Scope of work
+g. Proposed start and finish dates of project
+h. Full description of concept including any phases represented or connection to existing or
+future elements
+i. Document Index
+
+Page 17 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+3. Subsequent pages shall each contain:
+a. Project Name
+b. Revision
+c. Page Identifier
+d. Page description
+4. Floor Plans, Exterior Elevations and Area drawings shall also contain:
+a. Legend
+b. Scale / dimensions (graduated ruler, not relational scale (“1’=20’”is not
+acceptable))
+c. Compass orientation
+d. Unique identifier of all components shown including major cable segments.
+5. Document content pages sufficient to provide:
+a. Ordinance compliance statement(s)
+b. Minimum Designer Qualifications to include:
+i. Full Name of system Designer.
+ii. FCC GROL License copy (must bear holder’s signature).
+iii. Nationally recognized training certification.
+1. Nicet, ETA, etc. (appropriate level for system design).
+iv. Manufacturer training certification for system designer software e.g. IBwave, RanPlan
+etc. Certification is to be for iBwave Level 2, equivalent or higher, issued to individual
+specified as system designer.
+v. Manufacturer training certification for exact product proposed.
+c. Minimum Installation staff qualifications to include:
+i. Full Name of Lead Installer
+ii. FCC GROL License copy (must bear holder’s signature).
+iii. BDA Manufacturer training certification for proposed product.
+d. Valid California C7 or C10 State Contractor’s License (issued to organization or installation
+lead).
+e. Materials list (All Active and passive components excluding small hardware), all required
+items must be included in list, “provided by others” does not exclude the requirement for
+listing items i‐v below.
+i. Full model or part number
+ii. Manufacturer
+iii. Manufacturer’s description
+iv. FCC ID# (Type Acceptancy Approval for Active devices)
+Page 18 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+v. Quantities for each line item
+6. Physical installation details and requirements:
+a. Wall and floor penetration details
+b. Equipment mounting details and construction standards
+c. Electrical, ground and alarm cabling details
+d. Fireproofing requirements
+
+7. List of unique identifiers for all components and major cable segments.
+8. System Schematic of proposed system showing Unique identifier of:
+a. Active devices
+b. Antennas
+c. Splitters, taps, etc.
+d. Cable segments
+e. NOTE: Unique identifiers MUST be represented on all line drawings and floor plans.
+9. Power projections for each antenna describing uplink at donor and downlink power at each DAS
+antenna.
+a. Provide full calculations for each segment or point in tabular format
+b. Provide Schematic representation showing power projections at each junction/connection
+point.
+10. Anticipated attenuation for each cable segment and device port.
+11. Battery Backup run time calculations based on equipment to be installed.
+a. Provide in tabular format listing requirement for each powered device and capacity provided
+by proposed BBU.
+b. Manufacturer’s generic runtime statement is not sufficient.
+12. Donor Site Signal Path(s)
+a. List of all frequencies to be amplified by system
+b. Area map showing donor site location and path to designated donor site
+i. Show both vertical and horizontal path views
+13. Floor plans for all levels (even those not covered by system)
+Page 19 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+a. Show all unique identifiers of components shown
+b. Cable routes and identifiers
+14. Installation detail of all Head End and Remote devices including
+a. Rack or wall mount elevations including attachment method and grounding details (graphic
+with notes).
+b. Overhead view showing relative locations on floor plan projections.
+15. Fiber optics layout, and interconnect (if applicable).
+16. Heat maps for all assigned Cells (IBWave or similar) for every floor.
+a. Divide each floor into 20 or 40 equal signal grids as required by floor size.
+i. Assign unique ID to each grid. This grid system shall be used for initial coverage
+calculations and all future test documentation.
+b. Power projections are to be gradient with varying color for each 10dB range between ‐
+40dBm and ‐110dBm (greater ranges are acceptable outside ‐40 & ‐110dBm).
+i. Include legend on each page defining color scheme for projections.
+17. Manufacturer’s Data Sheet for all
+a. Active components
+b. Antennas
+c. Passive coupling devices (Taps, Power Dividers, etc.)
+d. Coaxial Cable
+e. Coaxial Connectors
+f. Fiber cable (if used)
+g. Fiber connections (if used)
+h. Enclosures to be provided by contractor
+
+Page 20 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+APPENDIX C
+System Installation Requirements
+As Licensee and custodian for the Orange County CCCS 800MHz Radio System, The Orange County
+Sheriff’s Department, Communications and Technology Division (OCSD/COMM) requires adherence to
+the following specifications as prerequisites to granting authorization for operation of Emergency
+Responder Radio Coverage Systems (ERRCS) supporting said radio system within the County of Orange,
+California. Application procedures for authorization to operate are defined in the “ERRCS/BDA/DAS
+system Guidelines” published by this entity and if provided, supplemental ordinance and guidelines
+applicable to incorporated Cities within the County.
+Minimum Construction Requirements – Additional requirements may be applied by local Fire
+Jurisdiction
+1. Must comply with current Orange County Fire Authority Ordinance, including adherence to CFC
+Chapter 5 (current version).
+2. All active components shall be enclosed in NEMA 4/4X enclosures (NEMA 3R for batteries requiring
+venting are acceptable).
+a. Exception may be granted for rack‐mounted equipment if contained within a 2 hour
+rated area.
+b. Power and signal cabling between the BDA, BBU and Power Distribution panel /
+disconnect must match the most restrictive rating of the connected equipment and are
+to be run in EMT (Electrical Metallic Tubing) or flexible conduit and terminated with
+approved fittings per the NEC and local building codes unless factory provided pre‐
+terminated cabling are used.
+3. Power to be provided by dedicated 120V 20A circuit.
+a. Active components must be hard‐wired to the dedicated branch circuit in the
+associated power distribution panel in accordance with NEC 310. No appliance cord
+connections are permissible.
+4. A disconnect means shall be provided allowing all active devices to be isolated from the AC
+power source with lock‐out/tag‐out capability.
+a. Shall be protected from accidental tripping by physical design or cover.
+b. Shall be labeled to show equipment protected and source circuit(s) (panel & breaker
+ID).
+Page 21 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+c. No unique tool or key shall be required to disconnect or restore power except in the
+case of purposeful lockout by a qualified individual.
+5. All active elements shall be provided 24 hour battery‐based backup power unless alternative
+run time is required or approved by AHJ.
+6. Alarm interface – Alarm display and logging shall conform to Appendix A paragraph 12
+a. The BDA alarm outputs shall be connected to the facility FACP.
+i. If FACP is not located in view of master amplifier, a local status display must
+be provided showing all monitored alarm conditions. This may be integrated
+to the amplifier, Battery Backup Unit, or external device.
+b. Amplifier and BBU alarms shall be interconnected so that all alarms are delivered
+to both units and any external devices.
+i. All BDA alarms shall be transferred to BBU for display and logging if BBU is so
+equipped.
+ii. All BBU alarms shall be delivered to Master Amplifier for the purpose of alarm
+logging and status display allowing user connected to remote management port
+on amplifier to view both BDA and BBU alarms.
+c. BDA system shall be equipped with auto‐dialer system driven by the system alarm
+outputs. The BDA auto dialer shall be programmed to report the assigned SITE ID to the
+County 900MHz paging system via dedicated telephone line (POTS) or cellular auto
+dialer. In the event of loss of commercial power, the Auto dialer will be supported by a
+battery backup, providing a minimum of 24 hours of operation.
+i. The Auto‐dialer back up battery shall be fitted with a properly sized,
+intelligent battery charger which will automatically recharge the Auto‐dialer
+backup battery upon restoration of power.
+1. The Auto‐Dialer may be powered by the master amplifier’s BBU
+provided sufficient run‐time can be provided.
+ii. The system shall be capable of providing SNMP based alarms to specified
+servers.
+7. Grounding, Bonding, and Lightning Protection.
+a. All active devices shall be grounded pursuant to NFPA 780 (2017) unless otherwise
+directed herein.
+b. All active devices shall be grounded to the master building ground bus.
+c. All ground bus bars shall be bonded to building ground via stranded copper wire
+no smaller than #2 AWG.
+
+Page 22 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+d. All ground bus bars shall be copper. Tinned copper is acceptable for exterior
+applications.
+e. No copper wire shall come into direct contact with aluminum.
+f. No copper bus bar shall come into direct contact with aluminum.
+g. Conductors shall be connected to bus bars and equipment using crimp style, two‐
+hole lugs wherever possible. Lug hole size shall match the hole or stud size of the
+bus bar / equipment.
+h. All Fasteners (Bolts, Nuts, Washers) used for attachment of grounding conductors
+shall be Stainless Steel or Copper.
+i. All hardware (Lugs, Bolts, Nuts, Washers, Etc.) shall be of appropriate dimension
+matching product served (Wire gauge, hole dimension, etc.), washers or other
+devices shall not be used to compensate for undersized hardware.
+j. Surge protection shall be grounded to the master building ground bus.
+k. Donor Antenna Surge Protector
+i. To be installed internally to the building.
+ii. Mounted within 24” of building entry point where possible.
+1. May be housed in a metallic NEMA 3R or NEMA4 enclosure at point of
+entry provided entire run to amplifier is enclosed in metallic conduit with
+prior approval.
+a. Enclosure must be sufficiently large to permit entry and egress of
+coaxial cable and ground conductor(s) entry and exit without
+exceeding manufacturer’s published bend radius restrictions.
+b. Equipment will be mounted in such a manner as to permit free
+access for service to all components without the necessity of
+removing hardware or devices.
+c. Enclosure(s) and conduit must be bonded to building ground.
+l. Donor antenna feed line shall be bonded to building ground using a coaxial ground
+kit appropriate to the size and type of coaxial cable in use. The Ground kit shall be
+attached to the coax at the point of transition from vertical to horizontal routing
+or at the point of entry to the building or grounded metallic conduit.
+m. Donor antenna mounting structures shall be grounded to the master building
+ground bus.
+8. The Donor antenna shall be positioned to provide clear line of sight (LOS) with the
+designated donor site. The measured downlink carrier level (control channel) at the donor
+antenna shall be within 6 dB of the calculated LOS value.
+
+Page 23 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+a. The Donor antenna support structure id to be permanently attached to the building
+structure – non‐penetrating rooftop “sled” mounts are not to be utilized without
+specific approval.
+b. No part of the donor antenna shall extend below 8’ above any walkable surface.
+c. The horizontal centerline of main transmission lobe of the antenna shall not transit
+less than 8’ above any walkable surface.
+d. Excess feed line is to be removed from the installation. No more than one coil, not
+exceeding 6 total cable feet, is permitted in the Donor line. Any coil is to be secured
+and is not to extend beyond the footprint of the Donor antenna support structure.
+e. Rain or service loops shall be installed to prevent touching or close proximity to the
+antenna’s radiating or reflecting components.
+f. Exterior Donor cabling shall be enclosed in metallic conduit of appropriate diameter
+or in cable tray for any segments having more than 3’ of horizontal exposure or any
+length crossing established pathways. Said conduit or tray is to be suspended not
+less than 3” above the surface.
+9. DAS (Service) Antenna System
+a. Antenna location must minimize exterior signal emissions.
+b. Antenna location and quantity must minimize Near‐Far effect.
+c. Cabling must match building fire rating or as specified by AHJ.
+d. Exposed cabling must be minimized.
+e. Feed lines and flexible jumpers must be located to prevent overlapping runs or looping
+of jumpers.
+f. Excess cable to be minimized.
+10. Antenna Isolation (Donor to DAS )
+a. Shall be at a minimum, 20dB greater than amplifier’s maximum rated gain.
+b. >100dB is desired.
+11. Labeling
+a. All labels shall be moisture proof and indelible, easily readable and appropriately fixed
+to the device. Service antennas may be labeled in such a way as to not be visible in
+public areas.
+b. Amplifier, battery enclosure, and ancillary enclosures must have visible identification
+showing:
+i. Description “County of Orange ERRCS System”.
+ii. Site ID (BDA and Auto Dialer only).
+iii. FCC Registration number (Master and Remote amplifiers only)
+iv. Full model and serial number of device.
+v. Power distribution panel ID and circuit branch/breaker ID of power source.
+vi. Operational class (A or B) (Amplifier(s) only).
+Page 24 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+c.
+
+vii. Date of most recent successful inspection (Amplifier only).
+viii. Contact information of current service provider.
+ix. Contact information for building representative with access to system
+components and records.
+1. Must be available 24/7 to provide access on demand.
+x. Location of system documents.
+1. NOTE: Recommend items vii‐ix to be on label provided and affixed by
+contractor performing inspection.
+Donor Antenna
+i. Engraved or Stamped brass tag
+ii. Minimum 1” diameter
+iii. Secured to antenna feed line using solid stainless steel safety wire or stainless
+steel tie at eye level on support structure or at easily accessed point as close to
+antenna as practical.
+1. Not to be attached directly to antenna radiating or directing elements.
+iv. Stamped “OC 800MHz ERRCS Donor” or “OC 800MHz ERCES Donor”.
+
+d. Power Distribution Panel (Circuit Breaker Panel)
+i. Breaker(s) to be clearly and legibly labeled on the Panel Schedule and Dead
+Front.
+ii. Label to state “ERRCS” and function (Amplifier, BBU, Etc.)
+e. Service Disconnect Device (switch)
+i. Label stating
+1. “ERRCS AC Service Disconnect”
+2. Room, Panel and breaker number of source circuit.
+f. Components and cabling
+i. Each item assigned a unique identifier is to be tagged showing “OC ERRCS” and
+the unique identifier of the component.
+ii. Cable segments to be labeled with “OC ERRCS” and unique identifier within 18”
+of each end.
+12. On Site Documentation
+a. System documentation to be located with head end amplifier
+b. May be in sealed container within BDA or BBU enclosure if a document pocket of
+sufficient size is provided.
+Page 25 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+c. If stored externally to equipment, installer must provide appropriate metallic or rigid
+plastic document holder.
+d. Must contain copies of System Diagrams required for commissioning consisting of but
+not limited to:
+i. Floor plans showing all component locations and unique identifiers.
+ii. System line drawings showing all components and unique identifiers
+iii. Equipment programming details (initial and current)
+iv. Commissioning test reports
+v. Most recent annual inspection
+vi. Supplemental reports as required
+vii. Original documents should be maintained by property owner
+e. Manufacturer’s manuals for
+i. Amplifier
+ii. BBU
+iii. Auto Dialer
+iv. Status Display
+v. Any other active components
+f. Maintenance log containing:
+i. Date(s) of service
+ii. Service provider
+iii. Name
+iv. Contact phone number
+v. Email
+vi. Nature of service provided
+g. Copy of current OCSD issued ERRCS Approval to Operate form.
+
+Page 26 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+APPENDIX D
+900 MHz Paging System Alarm Reporting
+OCSD/COMM maintains an automated alpha‐numeric paging system with coverage throughout Orange
+County for the reporting of alarms and system failures. Each ERRCS is to be equipped with an automated
+dial out (auto dialer) device capable of interacting with this system to generate a numeric page consisting
+of the site ID in the event of any monitored failure within the system. Normally this device requires a full
+time dedicated conventional analog (POTS) phone line. A cellular auto dialer is acceptable if reliable
+operation can be demonstrated.
+Programming of the auto dialer is critical as the transmitted elements must be timed to coincide with
+specific input windows from the paging system.
+Auto Dialer Configuration:
+The assigned BDA ID for the auto dialer will be in the following format:
+
+The OCSD/COMM 900 MHz Paging System phone number will be provided during plans review.
+You will need to program pauses (usually 4 each) between the number dialed, cap code and BDA ID for
+the auto dialer to function properly into the County’s 900MHz paging system.
+Upon notification by Pager in the event of a BDA failure the OSCD/COMM Technical Services Unit
+technician on duty will make notifications to the affected Law and/or Fire agencies as well as Control
+Page 27 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+One alerting them of lack of coverage and a need for service in the future. Attempts will be made to
+contact the owner and service company of record to help facilitate corrective measures.
+
+Page 28 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+APPENDIX E
+Commissioning, Third Party and Annual Testing Report Requirements
+It is the responsibility of the owner of a building containing or requiring an in‐building Emergency
+Responder Radio Coverage System (ERRCS) to acquire, file and have available for inspection, copies of
+the annual inspection report, conducted within the previous 13 calendar months and Approval to
+Operate documentation provided by the appropriate FCC licensee for each radio network supported by
+the system. Annual testing and proof of compliance shall be in accordance with Section 510.6.1 of the
+current California Fire Code.
+Annual testing should be conducted in preparation for the building’s annual fire inspection unless the
+previous inspection or commissioning report was conducted within the previous 9 calendar months.
+The annual report must be filed with OCSD within 30 calendar days following successful completion of
+testing to be considered valid.
+Initial Third Party tests shall be performed by a qualified testing entity not employed by the
+construction contractor nor any entity or individual related to the construction contractor. Subsequent
+annual testing may be performed by the installation contractor’s qualified testing agent.
+The report is to be filed with the Fire authority having jurisdiction (AHJ) and digital copies of all
+documents provided to OCSD/COMM (FCC Licensee) as shown in the current BDA Annual Inspection
+Form (APPENDIX F).
+Copies are to be maintained by the building owner at the site and available for review on demand.
+Specific documents are to be stored with the head end equipment (APPENDIX C Item 12).
+Inspections shall be conducted by OCSD/COMM or qualified testing agent. No person may conduct an
+annual test or inspection unless that person possesses a valid FCC GROL and certification from the
+equipment manufacturer for the device(s) under test and appropriate certification from a nationally
+recognized training agency.
+All RF measurements are to be made using spectrum analyzer or communications monitors with proof
+of current calibration.
+Downlink RF measurements are to be taken using control channel signals for both supported cells per
+site design.
+Reports shall be submitted as bound 8.5 x 11” booklet format and shall contain the following:
+
+Page 29 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+1. Cover page showing
+ Site name and address
+ Date(s) of Inspection
+ Site Owner name address, phone number and email address
+ On site (24/7) contact, Full Name, Address, Phone number & email address
+ Testing company’s contact information
+ Inspector’s name, contact address, phone number and email address
+2. Inspector’s proof of qualification (Minimum 3 items)
+ FCC GROL
+ BDA manufacturer’s certification for the device under test
+ Appropriate certification from nationally recognized agency
+3. Test description
+ Test requirements per applicable ordinances
+ Test methodology
+ Model, Serial Number and Calibration date for all test equipment
+4. Site Description
+ Site address
+ Site Cell assignments
+ Site ID Number
+ Site FCC Registration Number
+ Location of primary components within property
+ Model, Serial number and FCC certification number of all active RF components
+including:
+ Amplifier or Master Unit
+ Remote Amplifiers
+ Amplifier operating Class (A or Channelized B) including all filter bandwidths used
+ Model and serial number of remaining powered components
+ Battery Backup Units
+ Remote Alarm Reporting Devices
+ Phone number of line used by auto dialer
+
+Page 30 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+5. Inspection Result Summary Page
+List requirements and Pass/Fail Result
+ Interior Signal Strength (Downlink)
+ Exterior Signal Strength (Uplink)
+ RF Leakage <‐95bDm
+ SINR Values >20dB
+ DAQ test
+ Correct Frequency Filtering
+ Uplink Muting Enabled
+ Appropriate Uplink Mute Levels (‐75dBm to ‐85dBm)
+ Spurious Uplink Emissions Measurement
+ Quiescent Noise Floor Measurement
+ Donor Antenna Azimuth (specify degrees True or Magnetic)
+ Donor antenna meets minimum height requirement (8’ above walkable
+surface)
+ Backup Power Supply Battery Condition
+ Backup Power Supply Calculated Runtime
+ Backup Power Load Test
+ Physical Condition of Installation
+ NEMA 4/3R compliance of Equipment Enclosures Inter‐cabinet cabling
+ AC Power Termination
+ Appropriate Power Cut‐Off device
+ Grounding and Lightening Protection
+ Interference Test
+ Auto Dialer Test
+ Isolation Tests
+ Amplifier Gain Measurements
+ Uplink for all assigned frequencies
+ Downlink for all assigned frequencies
+ Any other applicable test results
+
+Page 31 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+6. Detailed Test Results
+Donor Site Path Profile
+A. Local Site coordinates.
+B. Donor Site(s) coordinates
+C. Graphic representation of horizontal and vertical paths showing:
+1. Donor Site(s) Name
+2. Azimuth (degrees Magnetic) to Donor Site(s)
+3. Path Length to Donor Site(s) (Miles)
+4. Calculated Path Loss to each donor site
+Graphic or tabular verification for all required tests (following)
+A. System primary and backup power
+1. One hour load test or pulse‐load battery capacity test.
+2. Verify ALL active components operating on backup power
+i. Amplifier/Master (Headend)
+ii. Remote amplifiers
+iii. Fault display
+iv. Auto dialer
+B. System gain and measured RF power
+1. Uplink and downlink
+2. All assigned frequencies
+3. Near‐far measurements (uplink only)
+i. Measurements are to be taken at the Donor output port of the
+master amplifier
+ii. Use Near and Far antennas identified in system design unless
+otherwise directed
+iii. Identify antennas used for Near and Far measurements
+iv. Near Measurement to be taken with standard transmitter (34dBm
+ERP) located 6‐10’ from “Near” antenna.
+v. Far measurement to be taken with standard transmitter located 50‐
+70’ from “Far” antenna
+vi. Show measurements taken during individual and simultaneous
+transmissions
+1. Near‐far effect is difference between individual transmit value
+of the Far transmitter and the Value recorded during
+simultaneous transmissions
+Page 32 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+C. Ambient (Passive) noise floor
+1. Measured at BDA Donor antenna feed point and BDA service antenna feed point
+2. Amplifier powered off
+3. Active DAS, if used, powered on
+4. Show span of 15‐20MHZ centered at 856MHz (Downlink) and 811MHz (Uplink)
+5. Provide a screenshot displaying noise entering BDA from donor antenna at both
+frequencies as described in item 4 (above)
+6. Provide a screenshot displaying noise entering BDA from service antennas at
+both frequencies as described in item 4 (above)
+7. If an active DAS is used, provide a screenshot of the noise entering the BDA from
+the active DAS
+D. Active noise floor
+1. Repeat item 3 with power applied to BDA, with all antennas connected.
+E. Antenna systems isolation
+1. Inject reference signal to DAS antenna system at 811MHz
+2. Show Injected power level
+3. Show Measured signal from Donor antenna system
+F. Downlink coverage measurement
+1. Conduct measurement on each floor with DAS antennas and each adjacent floor
+using 20 grid method. (Signal levels shall be no less than ‐95dBm in 95% of test
+grid areas).*
+a. Use grid created in original plan set.
+b. List recorded measurement in dBm.
+2. Measure and list SINR for each grid.
+3. Measure and list FBER for each grid.
+4. Floors not measured in item “A” above are to be measured as follows (annual
+testing only):
+c. Divide the level into four quadrants, each facing a different compass
+direction, and measure the signal level as close to the center of each
+quadrant as possible.
+d. Measuring the signal level at the point where the four quadrants
+meet, as close to the location of the center of the building as possible.
+Page 33 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+G. Downlink RF Leakage Test
+1. With the system disabled, measure active control channel signals from all
+assigned 800MHz Cells.
+i. Measurements should be taken between 10‐25 feet from outer walls and spaced
+at intervals of not more than 75’.
+2. Inject Signal into Master amplifier Donor Antenna port on 864.000MHz at level
+equal to greatest measured DL signal from Assigned Cell‐Sites control channel.
+3. Measure received signal at ground level outside building(s) at same points used
+in step 1.
+4. Measured signal should be NLT 20dB below measured control channel signal(s)
+measured with system disabled and in no case stronger than ‐95dBm.
+H. Uplink free space loss calculation
+1. Using Donor path distance determined by system design, estimate path loss to
+each assigned Donor site using appropriate free space formula for 811MHz.
+2. Measure and record maximum uplink power output and noise (based on 10KHz
+bandwidth) generated at donor antenna port of amplifier with maximum
+estimated uplink input signal injected at DAS antenna port of system.
+i. Use 811MHz signal injected to DAS port of the amplifier.
+3. Calculate and record estimated uplink transmission and noise levels anticipated
+at the assigned donor site for each supported cell based on path losses
+determined in 6.G.1. (above).
+I. Operations
+1. Determine and document DAQ for all grids. Minimum acceptable is DAQ 3.4 in
+95% of test grid areas on every floor and for all critical areas.
+*For Commissioning, test all floors of all included structures, without exception using the 20 grid method.
+
+7. Inspect and document
+A. Physical condition of equipment and installation
+i. Provide digital images of:
+a. Headend and Remote equipment – showing required labeling
+b. Headend and Remote cabling
+c. Donor Surge Protector
+d. Donor antenna and supporting structure
+a. Show required donor tag
+Page 34 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+e.
+f.
+g.
+h.
+
+Donor antenna alignment and path to Donor site(s)
+Interior of BBU cabinet
+Typical DAS antenna
+Any items requiring repair or support
+
+8. The Fire Marshal and/or the Fire Marshal’s designee may, at any time during routine business hours,
+conduct independent testing of the in‐building system to verify proper operation and shall be provided
+unimpeded access at any time 24 hours a day, 365 days a year, to investigate a case of interference
+with public safety communications systems.
+J. Annual testing will be done at no expense to the City or County.
+K. Annual tests results shall be filed with the AHJ/Fire Marshal and OCSD/COMM as directed.
+
+Page 35 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+APPENDIX F
+Approval to Operate Sample
+Must be posted at primary amplifier & updated annually
+
+Page 37 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+APPENDIX G
+
+ERRCS Approval Flow Chart, Revised 7‐16‐2024
+
+Page 39 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+Orange County Sheriff’s Department
+Technology Division
+1382 Bell Ave.
+Tustin, CA
+714‐704‐7999
+
+Technical Services Unit
+
+Gary Blankenship ‐ Senior Telecommunications Engineer Technical Services Unit 714‐704‐7917
+
+Page 40 of 40
+Rev 4.4B 7‐16‐2024
+
+Orange County Sheriff’s Department
+Technology Division
+Emergency Responder Radio Communications Systems
+
+ADDENDUM
+OCSD NICET Requirements
+3/11/2025
+Subject: OCSD ERRCS Guidelines REV 4.4B NICET Requirements Effective Immediately.
+The functions below shall be performed by named and qualified persons:
+1.
+
+Design
+a.
+
+Minimum Designer qualifications to include: Full Name of system Designer.
+
+b.
+
+FCC GROL License copy (must bear holder’s signature).
+i. Nationally recognized training certification. NICET IB-PSC Design.
+ii. Manufacturer training certification for system designer software e.g, RanPlan, iBwave, etc.
+equivalent or higher, issued to individual specified as system designer.
+iii. BDA Manufacturer training certification.
+
+2.
+
+Installation
+a.
+
+Minimum Installation staff qualifications to include: Full Name of Lead Installer
+
+b.
+
+FCC GROL License copy (must bear holder’s signature).
+i. Nationally recognized training certification. NICET IB-PSC Level 2 (To be on-site at all times).
+ii. BDA Manufacturer training certification.
+
+3.
+
+Testing, Commissioning, and Maintenance
+a.
+
+Minimum staff qualifications to include: Full Name of Lead Engineer
+
+b.
+
+FCC GROL License copy (must bear holder’s signature).
+i. Nationally recognized training certification. NICET IB-PSC Level 3
+ii. BDA Manufacturer training certification.
+
+Bill Benson – ERRCS/BDA Plan Approval
+Communications & Technology Division
+1382 Bell Avenue | Tustin | California | 92780
+CELL 714-398-6584
+ERRCS@OCSHERIFF.GOV
+
+

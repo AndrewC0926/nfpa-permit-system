@@ -1,0 +1,10 @@
+OrdererOrgs:
+  - Name: OrdererOrg
+    Domain: permit.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: orderer
+        SANS:
+          - localhost
+          - 127.0.0.1
+          - orderer.permit.com 

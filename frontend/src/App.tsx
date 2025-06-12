@@ -1,113 +1,101 @@
-import React, { useState } from 'react';
-import {
-  AppBar, Toolbar, Typography, Drawer, List, ListItem,
-  ListItemIcon, ListItemText, Box, CssBaseline, ThemeProvider,
-  createTheme, Container
-} from '@mui/material';
-import {
-  Dashboard as DashboardIcon, Description, Psychology,
-  CloudUpload, Assessment
-} from '@mui/icons-material';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import Layout from './components/Layout';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Permits from './pages/Permits';
+import PermitDetail from './pages/PermitDetail';
+import Checklist from './pages/Checklist';
+import Chat from './pages/Chat';
+import AuditLog from './pages/AuditLog';
+import Landing from './pages/Landing';
 
-import Dashboard from './components/Dashboard';
-import PermitForm from './components/PermitForm';
-import PermitList from './components/PermitList';
-import AIAnalysis from './components/AIAnalysis';
-import DocumentUpload from './components/DocumentUpload';
-
-const theme = createTheme({
-  palette: {
-    primary: { main: '#1976d2' },
-    secondary: { main: '#dc004e' },
-  },
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+            retry: 1,
+        },
+    },
 });
 
-const drawerWidth = 240;
-
-const menuItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
-  { id: 'permits', label: 'Permit Management', icon: <Description /> },
-  { id: 'ai-analysis', label: 'AI Analysis', icon: <Psychology /> },
-  { id: 'documents', label: 'Document Upload', icon: <CloudUpload /> },
-  { id: 'reports', label: 'Reports', icon: <Assessment /> },
-];
-
-function App() {
-  const [selectedView, setSelectedView] = useState('dashboard');
-  const [permits, setPermits] = useState([]);
-
-  const handlePermitSubmit = (permitData: any) => {
-    const newPermit = {
-      id: `PERMIT_${Date.now()}`,
-      ...permitData,
-      status: 'SUBMITTED',
-      submissionDate: new Date().toISOString(),
-    };
-    setPermits(prev => [...prev, newPermit]);
-    setSelectedView('permits');
-  };
-
-  const handleViewDetails = (permit: any) => {
-    console.log('Viewing permit details:', permit);
-  };
-
-  const renderContent = () => {
-    switch (selectedView) {
-      case 'dashboard': return <Dashboard permits={permits} />;
-      case 'permits': return <PermitList permits={permits} onViewDetails={handleViewDetails} />;
-      case 'ai-analysis': return <AIAnalysis />;
-      case 'documents': return <DocumentUpload />;
-      case 'reports': return <div>Reports coming soon...</div>;
-      default: return <Dashboard permits={permits} />;
-    }
-  };
-
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box sx={{ display: 'flex' }}>
-        <AppBar position="fixed" sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}>
-          <Toolbar>
-            <Typography variant="h6" noWrap component="div">
-              🏛️ AI-Powered NFPA Permit Review System
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        
-        <Drawer
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': { width: drawerWidth, boxSizing: 'border-box' },
-          }}
-          variant="permanent"
-          anchor="left"
-        >
-          <Toolbar />
-          <List>
-            {menuItems.map((item) => (
-              <ListItem
-                key={item.id}
-                selected={selectedView === item.id}
-                onClick={() => setSelectedView(item.id)}
-                sx={{ cursor: 'pointer' }}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.label} />
-              </ListItem>
-            ))}
-          </List>
-        </Drawer>
-        
-        <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
-          <Toolbar />
-          <Container maxWidth="xl">
-            {renderContent()}
-          </Container>
-        </Box>
-      </Box>
-    </ThemeProvider>
-  );
+export default function App() {
+    return (
+        <QueryClientProvider client={queryClient}>
+            <Router>
+                <AuthProvider>
+                    <Toaster position="top-right" />
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <ProtectedRoute>
+                                    <Layout>
+                                        <Dashboard />
+                                    </Layout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/permits"
+                            element={
+                                <ProtectedRoute>
+                                    <Layout>
+                                        <Permits />
+                                    </Layout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/permits/:id"
+                            element={
+                                <ProtectedRoute>
+                                    <Layout>
+                                        <PermitDetail />
+                                    </Layout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/checklist"
+                            element={
+                                <ProtectedRoute>
+                                    <Layout>
+                                        <Checklist />
+                                    </Layout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/chat"
+                            element={
+                                <ProtectedRoute>
+                                    <Layout>
+                                        <Chat />
+                                    </Layout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/audit-log"
+                            element={
+                                <ProtectedRoute>
+                                    <Layout>
+                                        <AuditLog />
+                                    </Layout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path="/" element={<Landing />} />
+                    </Routes>
+                </AuthProvider>
+            </Router>
+        </QueryClientProvider>
+    );
 }
-
-export default App;

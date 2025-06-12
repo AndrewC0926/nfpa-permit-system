@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "VITE_API_BASE_URL": "@vite_api_base_url",
+    "VITE_S3_BUCKET": "@vite_s3_bucket",
+    "VITE_AI_SERVICE_URL": "@vite_ai_service_url",
+    "VITE_BLOCKCHAIN_EXPLORER_URL": "@vite_blockchain_explorer_url",
+    "VITE_SENTRY_DSN": "@vite_sentry_dsn",
+    "VITE_GA_TRACKING_ID": "@vite_ga_tracking_id"
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://api.vetria.ai/api/$1" }
+  ]
+} 
