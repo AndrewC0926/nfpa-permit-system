@@ -79,3 +79,5 @@ msp/
 keystore/
 blockchain/organizations/
 blockchain/channel-artifacts/
+test-submittals/
+fabric-network/bin/
