@@ -1,101 +1,95 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider } from './contexts/AuthContext';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import Layout from './components/Layout';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import Permits from './pages/Permits';
-import PermitDetail from './pages/PermitDetail';
-import Checklist from './pages/Checklist';
-import Chat from './pages/Chat';
-import AuditLog from './pages/AuditLog';
-import Landing from './pages/Landing';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { PermitDetail } from './pages/PermitDetail';
+import { DemoModeProvider, useDemoMode } from './contexts/DemoModeContext';
+import { Switch } from '@headlessui/react';
 
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            refetchOnWindowFocus: false,
-            retry: 1,
-        },
-    },
-});
+const DemoModeToggle: React.FC = () => {
+    const { isDemoMode, toggleDemoMode } = useDemoMode();
 
-export default function App() {
     return (
-        <QueryClientProvider client={queryClient}>
-            <Router>
-                <AuthProvider>
-                    <Toaster position="top-right" />
-                    <Routes>
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route
-                            path="/dashboard"
-                            element={
-                                <ProtectedRoute>
-                                    <Layout>
-                                        <Dashboard />
-                                    </Layout>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/permits"
-                            element={
-                                <ProtectedRoute>
-                                    <Layout>
-                                        <Permits />
-                                    </Layout>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/permits/:id"
-                            element={
-                                <ProtectedRoute>
-                                    <Layout>
-                                        <PermitDetail />
-                                    </Layout>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/checklist"
-                            element={
-                                <ProtectedRoute>
-                                    <Layout>
-                                        <Checklist />
-                                    </Layout>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/chat"
-                            element={
-                                <ProtectedRoute>
-                                    <Layout>
-                                        <Chat />
-                                    </Layout>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/audit-log"
-                            element={
-                                <ProtectedRoute>
-                                    <Layout>
-                                        <AuditLog />
-                                    </Layout>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route path="/" element={<Landing />} />
-                    </Routes>
-                </AuthProvider>
-            </Router>
-        </QueryClientProvider>
+        <Switch.Group as="div" className="flex items-center">
+            <Switch.Label as="span" className="mr-3">
+                <span className="text-sm font-medium text-gray-900">Demo Mode</span>
+            </Switch.Label>
+            <Switch
+                checked={isDemoMode}
+                onChange={toggleDemoMode}
+                className={`${
+                    isDemoMode ? 'bg-blue-600' : 'bg-gray-200'
+                } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
+            >
+                <span
+                    aria-hidden="true"
+                    className={`${
+                        isDemoMode ? 'translate-x-5' : 'translate-x-0'
+                    } pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
+                />
+            </Switch>
+        </Switch.Group>
     );
-}
+};
+
+const App: React.FC = () => {
+    return (
+        <DemoModeProvider>
+            <Router>
+                <div className="min-h-screen bg-gray-100">
+                    <nav className="bg-white shadow">
+                        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                            <div className="flex h-16 justify-between">
+                                <div className="flex">
+                                    <div className="flex flex-shrink-0 items-center">
+                                        <Link to="/" className="text-xl font-bold text-gray-900">
+                                            NFPA Permit System
+                                        </Link>
+                                    </div>
+                                    <div className="ml-6 flex space-x-8">
+                                        <Link
+                                            to="/"
+                                            className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                                        >
+                                            Dashboard
+                                        </Link>
+                                        <Link
+                                            to="/permits"
+                                            className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                                        >
+                                            Permits
+                                        </Link>
+                                    </div>
+                                </div>
+                                <div className="flex items-center">
+                                    <DemoModeToggle />
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <main>
+                        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+                            <Routes>
+                                <Route path="/permits/:id" element={<PermitDetail />} />
+                                <Route
+                                    path="/"
+                                    element={
+                                        <div className="text-center">
+                                            <h1 className="text-2xl font-bold text-gray-900">
+                                                Welcome to NFPA Permit System
+                                            </h1>
+                                            <p className="mt-2 text-gray-600">
+                                                Select a permit to view its details
+                                            </p>
+                                        </div>
+                                    }
+                                />
+                            </Routes>
+                        </div>
+                    </main>
+                </div>
+            </Router>
+        </DemoModeProvider>
+    );
+};
+
+export default App;
